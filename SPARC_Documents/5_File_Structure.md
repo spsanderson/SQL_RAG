@@ -1,6 +1,7 @@
 # **File Structure Proposal: Local LLM RAG SQL Query Application**
 
 ---
+
 [Back to Main SPARC Documentation](SQL%20LLM%20RAG%20Project%20SPARC.md)
 
 ## **Overview**
@@ -8,6 +9,7 @@
 This file structure proposal follows industry best practices for Python applications, emphasizing modularity, maintainability, and clear separation of concerns. The structure supports the SPARC methodology (Specification, Pseudocode, Architecture, Refinement, Completion) and enables efficient development, testing, and deployment.
 
 **Design Principles**:
+
 - **Separation of Concerns**: Code organized by functional domain
 - **Scalability**: Easy to add new features without restructuring
 - **Discoverability**: Intuitive naming and logical hierarchy
@@ -251,6 +253,7 @@ docs/
 **Key Documentation Files**:
 
 #### **`docs/README.md`** - Documentation Index
+
 ```markdown
 # SQL RAG Ollama Documentation
 
@@ -423,6 +426,7 @@ src/
 ```
 
 **Module README Template** (`src/[module]/README.md`):
+
 ```markdown
 # [Module Name] Module
 
@@ -439,11 +443,14 @@ Brief description of what this module does and its role in the application.
   - `another_function()` - Description
 - **Dependencies**: Other modules it depends on
 - **Usage Example**:
-  ```python
+
+  ``python
   from src.module import Component
   component = Component()
   result = component.do_something()
-  ```
+  ``
+
+```
 
 ## Architecture
 
@@ -456,6 +463,7 @@ Configuration options specific to this module (reference config files).
 ## Testing
 
 How to test this module:
+
 ```bash
 pytest tests/unit/module/
 ```
@@ -463,7 +471,6 @@ pytest tests/unit/module/
 ## Contributing
 
 Guidelines specific to this module.
-```
 
 ---
 
@@ -544,6 +551,7 @@ tests/
 ```
 
 **Testing README** (`tests/README.md`):
+
 ```markdown
 # Testing Guide
 
@@ -583,23 +591,25 @@ pytest tests/unit/test_query_processor.py::test_simple_query
 ## Writing Tests
 
 ### Unit Test Example
+
 ```python
 def test_sql_validator_blocks_drop():
     validator = SQLValidator()
     sql = "DROP TABLE users;"
-    
+  
     with pytest.raises(SecurityError):
         validator.validate(sql)
 ```
 
 ### Integration Test Example
+
 ```python
 def test_query_processing_pipeline():
     processor = QueryProcessor()
     query = "How many patients admitted yesterday?"
-    
+  
     result = processor.process(query)
-    
+  
     assert result.success is True
     assert result.row_count > 0
 ```
@@ -613,11 +623,13 @@ def test_query_processing_pipeline():
 ## CI/CD Integration
 
 Tests run automatically on:
+
 - Every push to main
 - Every pull request
 - Nightly builds
 
 See `.github/workflows/ci.yml` for details.
+
 ```
 
 ---
@@ -625,6 +637,7 @@ See `.github/workflows/ci.yml` for details.
 ### **2.4 Configuration Structure (`/config/`)**
 
 ```
+
 config/
 │
 ├── README.md                     # Configuration guide
@@ -649,6 +662,7 @@ config/
 └── schemas/                      # Configuration schemas (validation)
     ├── database_schema.json
     └── ollama_schema.json
+
 ```
 
 **Example Configuration Files**:
@@ -664,7 +678,7 @@ database:
     database: ${DB_NAME:production}
     username: ${DB_USER:readonly_user}
     password: ${DB_PASSWORD}  # From environment variable
-    
+  
     # Connection pool settings
     connection_pool:
       min_size: 5
@@ -672,19 +686,19 @@ database:
       timeout: 30  # seconds
       max_overflow: 10
       pool_recycle: 3600  # 1 hour
-    
+  
     # Query settings
     query:
       timeout: 30  # seconds
       max_rows: 10000
       default_limit: 1000
-    
+  
     # Schema management
     schema:
       refresh_interval: 86400  # 24 hours (seconds)
       cache_enabled: true
       cache_ttl: 3600  # 1 hour
-      
+    
   # Future database support
   postgresql:
     enabled: false
@@ -693,6 +707,7 @@ database:
 ```
 
 #### **`config/ollama.yaml`**
+
 ```yaml
 # Ollama LLM Configuration
 ollama:
@@ -704,7 +719,7 @@ ollama:
   model:
     name: sqlcoder:7b-q4
     alternative: codellama:7b
-    
+  
     # Generation parameters
     temperature: 0.1  # Low for deterministic SQL
     top_p: 0.9
@@ -713,14 +728,14 @@ ollama:
     stop_sequences:
       - ";"
       - "```"
-    
+  
   # Performance settings
   performance:
     num_ctx: 2048  # Context window
     num_thread: 8  # CPU threads
     use_mmap: true
     use_mlock: false
-    
+  
   # Retry logic
   retry:
     max_attempts: 3
@@ -729,6 +744,7 @@ ollama:
 ```
 
 #### **`config/rag.yaml`**
+
 ```yaml
 # RAG Configuration
 rag:
@@ -737,14 +753,14 @@ rag:
     provider: chromadb
     persist_directory: ./data/vector_db
     collection_name: sql_schema
-    
+  
     # Embedding settings
     embedding:
       model: all-MiniLM-L6-v2
       dimension: 384
       batch_size: 32
       normalize: true
-    
+  
     # Search settings
     search:
       top_k: 5
@@ -759,7 +775,7 @@ rag:
     include_examples: true
     include_business_rules: true
     prioritize_recent: true
-    
+  
   # Indexing settings
   indexing:
     batch_size: 100
@@ -768,6 +784,7 @@ rag:
 ```
 
 **Configuration README** (`config/README.md`):
+
 ```markdown
 # Configuration Guide
 
@@ -799,11 +816,13 @@ DB_PASSWORD=secure_password
 ## Environment-Specific Configurations
 
 Override defaults with environment-specific files:
+
 - `environments/development.yaml`
 - `environments/staging.yaml`
 - `environments/production.yaml`
 
 Load with:
+
 ```python
 from src.config_loader import load_config
 config = load_config(environment='production')
@@ -823,6 +842,7 @@ Configurations are validated against JSON schemas in `schemas/`.
 ## Examples
 
 See `templates/` for configuration templates.
+
 ```
 
 ---
@@ -830,6 +850,7 @@ See `templates/` for configuration templates.
 ### **2.5 Scripts Structure (`/scripts/`)**
 
 ```
+
 scripts/
 │
 ├── README.md                     # Scripts usage guide
@@ -873,6 +894,7 @@ scripts/
     ├── export_metrics.py        # Export metrics
     ├── analyze_logs.py          # Log analysis
     └── generate_report.py       # Generate health report
+
 ```
 
 **Example Script** - `scripts/setup/install_dependencies.sh`:
@@ -1006,6 +1028,7 @@ data/                             # Data storage (gitignored)
 ```
 
 **Data Management README** (`data/README.md`):
+
 ```markdown
 # Data Directory
 
@@ -1051,22 +1074,26 @@ Curated example queries organized by category.
 ```
 
 ### `/query_history/`
+
 Historical query logs for analytics and learning.
 
 **Format**: JSONL (one JSON object per line) for efficient appending
 **Retention**: 90 days in hot storage, archived thereafter
 
 ### `/logs/`
+
 Application logs. See `config/logging.yaml` for configuration.
 
 **Rotation**: Daily, compressed after 7 days, retained for 90 days
 
 ### `/cache/`
+
 Temporary cache for performance optimization.
 
 **Eviction**: LRU policy, max 1GB
 
 ### `/exports/`
+
 User-generated data exports.
 
 **Cleanup**: Files older than 30 days automatically deleted
@@ -1081,16 +1108,19 @@ User-generated data exports.
 ## Backup Strategy
 
 ### Daily Backups
+
 ```bash
 scripts/maintenance/backup_data.sh
 ```
 
 Backs up:
+
 - Vector database
 - Query history (last 30 days)
 - Current schema
 
 ### Restore Process
+
 ```bash
 scripts/maintenance/restore_data.sh <backup_file>
 ```
@@ -1100,6 +1130,7 @@ scripts/maintenance/restore_data.sh <backup_file>
 - Query history retained for 90 days (HIPAA requirement)
 - Audit logs retained for 7 years
 - PII/PHI never stored in query history (masked)
+
 ```
 
 ---
@@ -1142,6 +1173,7 @@ python src/main.py
 ## 🏗️ Architecture
 
 Built with:
+
 - **Ollama** - Local LLM inference (SQLCoder-7B)
 - **ChromaDB** - Vector database for RAG
 - **Python 3.9+** - Application runtime
@@ -1185,6 +1217,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 - [Documentation](https://docs.example.com)
 - [Issue Tracker](https://github.com/yourorg/sql-rag-ollama/issues)
 - [Discussions](https://github.com/yourorg/sql-rag-ollama/discussions)
+
 ```
 
 #### **`Makefile`** - Task Automation
@@ -1276,6 +1309,7 @@ docs:
 ```
 
 #### **`pyproject.toml`** - Project Metadata
+
 ```toml
 [build-system]
 requires = ["setuptools>=65.0", "wheel"]
@@ -1377,6 +1411,7 @@ select = ["E", "F", "W", "C", "N"]
 ## **3. Development Workflow Documentation**
 
 ### **`CONTRIBUTING.md`**
+
 ```markdown
 # Contributing to SQL RAG Ollama
 
@@ -1396,15 +1431,16 @@ Thank you for your interest in contributing! This guide will help you get starte
    # Fork on GitHub, then clone your fork
    git clone https://github.com/YOUR_USERNAME/sql-rag-ollama.git
    cd sql-rag-ollama
-   ```
+```
 
 2. **Set up development environment**
+
    ```bash
    make setup
    source venv/bin/activate
    ```
-
 3. **Create a feature branch**
+
    ```bash
    git checkout -b feature/your-feature-name
    ```
@@ -1438,6 +1474,7 @@ make test-cov
 ### Commit Messages
 
 Follow conventional commits format:
+
 ```
 type(scope): subject
 
@@ -1449,6 +1486,7 @@ footer
 Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
 
 Example:
+
 ```
 feat(llm): add retry logic for failed queries
 
@@ -1495,6 +1533,7 @@ Releases are managed by maintainers. Version follows SemVer.
 ## 📜 License
 
 By contributing, you agree that your contributions will be licensed under the MIT License.
+
 ```
 
 ---
@@ -1504,6 +1543,7 @@ By contributing, you agree that your contributions will be licensed under the MI
 ### **Docker Structure (`/deployment/docker/`)**
 
 ```
+
 deployment/docker/
 │
 ├── Dockerfile                    # Main application image
@@ -1517,6 +1557,7 @@ deployment/docker/
     ├── entrypoint.sh            # Container entrypoint
     ├── healthcheck.sh           # Health check script
     └── wait-for-it.sh           # Wait for services script
+
 ```
 
 **`Dockerfile`**:
@@ -1605,6 +1646,7 @@ scripts/        → Automation and utilities
 ### **File Organization Rules**
 
 ✅ **DO**:
+
 - Keep related files together
 - Use descriptive directory names
 - Include README.md in each major directory
@@ -1613,6 +1655,7 @@ scripts/        → Automation and utilities
 - Version control everything except data/
 
 ❌ **DON'T**:
+
 - Mix concerns in single directory
 - Use cryptic abbreviations
 - Commit sensitive data or credentials
