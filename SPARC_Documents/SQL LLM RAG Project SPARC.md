@@ -49,6 +49,8 @@ Great project! Let's structure this using the SPARC framework to build a robust 
 
 ## 2️⃣ **Pseudocode**
 
+[Main Pseudocode Document](Pseudocode_Requirements.md)
+
 ```
 INITIALIZE APPLICATION:
     Load database schema into vector store
