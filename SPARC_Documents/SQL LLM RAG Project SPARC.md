@@ -39,6 +39,7 @@ Great project! Let's structure this using the SPARC framework to build a robust 
 - [Functional Requirements](1_Functional%20Requirements.md)
 - [Non-Functional Requirements](2_NonFunctional_Requirements.md)
 - [User Scenarios](3_User_Scenarios.md)
+- [UI/UX Requirements](4_UIUX_Requirements.md)
 
 
 ---
