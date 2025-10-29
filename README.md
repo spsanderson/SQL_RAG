@@ -5,26 +5,34 @@ Summary:
 
 **Documents Analyzed:**
 
+  * **TITLE:** [`SPARC Document`](SPARC_Documents/SQL%20LLM%@)RAG%20Project%SPARC.md)
   * **TITLE:** [`1_Functional Requirements.md`](SPARC_Documents/1_Functional%20Requirements.md)
   * **TITLE:** [`2_NonFunctional_Requirements.md`](SPARC_Documents/2_NonFunctional_Requirements.md)
   * **TITLE:** [`3_User_Scenarios.md`](SPARC_Documents/3_User_Scenarios.md)
   * **TITLE:** [`4_UIUX_Requirements.md`](SPARC_Documents/4_UIUX_Requirements.md)
   * **TITLE:** [`5_File_Structure.md`](SPARC_Documents/5_File_Structure.md)
   * **TITLE:** [`6_Assumptions_Requirements.md`](SPARC_Documents/6_Assumptions_Requirements.md)
+  * **TITLE:** [`7_Reflection.md`](SPARC_Documents/7_Reflection.md)
+  * **TITLE:** [`Pseudocode Document`](SPARC_Documents/Pseudocode_Requirements.md)
   * **TITLE:** [`Architecture_Requirements.md`](SPARC_Documents/Architecture_Requirements.md)
+  * **TITLE:** [`Refinement Document`](SPARC_Documents/Refinement_Document.md)
   * **TITLE:** [`Completion_Document.md`](SPARC_Documents/Completion_Document.md)
 
 **List of Filenames:**
 
 ```
 [
+  "SQL LLM RAG Project SPARC.md",
   "1_Functional Requirements.md",
   "2_NonFunctional_Requirements.md",
   "3_User_Scenarios.md",
   "4_UIUX_Requirements.md",
   "5_File_Structure.md",
   "6_Assumptions_Requirements.md",
+  "7_Reflection.md",
+  "Pseudocode Requirements.md",
   "Architecture_Requirements.md",
+  "Refinement_Document.md",
   "Completion_Document.md"
 ]
 ```
