@@ -841,8 +841,6 @@ Configurations are validated against JSON schemas in `schemas/`.
 
 See `templates/` for configuration templates.
 
-```
-
 ---
 
 ### **2.5 Scripts Structure (`/scripts/`)**
