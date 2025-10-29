@@ -97,6 +97,8 @@ MAIN QUERY LOOP:
 
 ## 3️⃣ **Architecture**
 
+[Main Architecture Document](Architecture_Requirements.md)
+
 ### **System Components**
 
 #### **A. Vector Store Layer**
