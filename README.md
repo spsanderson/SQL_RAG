@@ -6,13 +6,13 @@ Summary:
 **Documents Analyzed:**
 
   * **TITLE:** [`1_Functional Requirements.md`](SPARC_Documents/1_Functional%20Requirements.md)
-  * **TITLE:** [`2_NonFunctional_Requirements.md`](2_NonFunctional_Requirements.md)
-  * **TITLE:** [`3_User_Scenarios.md`](3_User_Scenarios.md)
-  * **TITLE:** [`4_UIUX_Requirements.md`](4_UIUX_Requirements.md)
-  * **TITLE:** [`5_File_Structure.md`](5_File_Structure.md)
-  * **TITLE:** [`6_Assumptions_Requirements.md`](6_Assumptions_Requirements.md)
-  * **TITLE:** [`Architecture_Requirements.md`](Architecture_Requirements.md)
-  * **TITLE:** [`Completion_Document.md`](Completion_Document.md)
+  * **TITLE:** [`2_NonFunctional_Requirements.md`](SPARC_Documents/2_NonFunctional_Requirements.md)
+  * **TITLE:** [`3_User_Scenarios.md`](SPARC_Documents/3_User_Scenarios.md)
+  * **TITLE:** [`4_UIUX_Requirements.md`](SPARC_Documents/4_UIUX_Requirements.md)
+  * **TITLE:** [`5_File_Structure.md`](SPARC_Documents/5_File_Structure.md)
+  * **TITLE:** [`6_Assumptions_Requirements.md`](SPARC_Documents/6_Assumptions_Requirements.md)
+  * **TITLE:** [`Architecture_Requirements.md`](SPARC_Documents/Architecture_Requirements.md)
+  * **TITLE:** [`Completion_Document.md`](SPARC_Documents/Completion_Document.md)
 
 **List of Filenames:**
 
