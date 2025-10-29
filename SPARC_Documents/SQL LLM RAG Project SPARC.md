@@ -44,7 +44,6 @@ Great project! Let's structure this using the SPARC framework to build a robust 
 - [Assumptions](6_Assumptions.md)
 - [Reflection](7_Reflection.md)
 
-
 ---
 
 ## 2️⃣ **Pseudocode**
@@ -183,6 +182,8 @@ SQL Generation → Validation → Execution → Response Formatting
 ---
 
 ## 4️⃣ **Refinement**
+
+[Main Refinement Document](Refinement_Document.md)
 
 ### **Key Implementation Details**
 
