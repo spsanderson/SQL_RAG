@@ -8,6 +8,8 @@
 
 ---
 
+[Back to Main SPARC Documentation](SQL%20LLM%20RAG%20Project%20SPARC.md)
+
 ## **Executive Summary**
 
 This architecture document defines the technical blueprint for the SQL RAG Ollama application—a natural language interface for SQL databases leveraging local Large Language Models (LLMs) and Retrieval-Augmented Generation (RAG). The architecture supports the core objective: **enabling non-technical healthcare users to query databases through conversational language while maintaining HIPAA compliance through local-only processing**.
