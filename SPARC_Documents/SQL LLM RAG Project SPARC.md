@@ -42,6 +42,7 @@ Great project! Let's structure this using the SPARC framework to build a robust 
 - [UI/UX Requirements](4_UIUX_Requirements.md)
 - [File Structure](5_File_Structure.md)
 - [Assumptions](6_Assumptions.md)
+- [Reflection](7_Reflection.md)
 
 
 ---
