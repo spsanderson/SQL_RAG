@@ -41,7 +41,7 @@ Summary:
 
 ## 📄 Document Summaries for README
 
-Here are summaries for each specification document, suitable for individual sections in a GitHub README file.
+Here are summaries for each specification document.
 
 ### Functional Requirements (`1_Functional Requirements.md`)
 
