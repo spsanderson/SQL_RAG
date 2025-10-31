@@ -173,7 +173,7 @@ SQL Generation → Validation → Execution → Response Formatting
 │    Aware)    │   │  Client)    │    │ (Security)  │   │ (Connection │
 └──────┬───────┘   └──────┬──────┘    └─────────────┘   │    Pool)    │
        │                  │                             └──────┬──────┘
-       ▼                  ▼                                     ▼
+       ▼                  ▼                                    ▼
 ┌──────────────┐   ┌─────────────┐                       ┌─────────────┐
 │  ChromaDB    │   │   Ollama    │                       │ SQL Server  │
 │(Vector Store)│   │ (Local LLM) │                       │ (Database)  │

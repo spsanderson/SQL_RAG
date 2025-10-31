@@ -193,7 +193,7 @@ This document defines the **technical blueprint and high-level design** for the 
 │    Aware)    │   │  Client)    │    │ (Security)  │   │ (Connection │
 └──────┬───────┘   └──────┬──────┘    └─────────────┘   │    Pool)    │
        │                  │                             └──────┬──────┘
-       ▼                  ▼                                     ▼
+       ▼                  ▼                                    ▼
 ┌──────────────┐   ┌─────────────┐                       ┌─────────────┐
 │  ChromaDB    │   │   Ollama    │                       │ SQL Server  │
 │(Vector Store)│   │ (Local LLM) │                       │ (Database)  │
