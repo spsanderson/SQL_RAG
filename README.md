@@ -5,7 +5,7 @@ Summary:
 
 **Documents Analyzed:**
 
-  * **TITLE:** [`SPARC Document`](SPARC_Documents/SQL%20LLM%RAG%20Project%SPARC.md)
+  * **TITLE:** [`SPARC Document`](SPARC_Documents/SQL%20LLM%20RAG%20Project%20SPARC.md)
   * **TITLE:** [`1_Functional Requirements.md`](SPARC_Documents/1_Functional%20Requirements.md)
   * **TITLE:** [`2_NonFunctional_Requirements.md`](SPARC_Documents/2_NonFunctional_Requirements.md)
   * **TITLE:** [`3_User_Scenarios.md`](SPARC_Documents/3_User_Scenarios.md)
