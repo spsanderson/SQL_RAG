@@ -136,6 +136,51 @@ User Input → Intent Classification → Context Retrieval →
 SQL Generation → Validation → Execution → Response Formatting
 ```
 
+### **Full Diagram**
+
+```
+┌────────────────────────────────────────────────────────────────────┐
+│                         USER INTERFACE (Streamlit)                 │
+│  ┌────────────┐  ┌────────────┐  ┌──────────────┐  ┌───────────┐   │
+│  │Query Input │  │Clarification│ │   Results    │  │  History  │   │
+│  │ Component  │  │   Dialog    │ │   Display    │  │  Sidebar  │   │
+│  └─────┬──────┘  └──────┬─────┘  └──────┬───────┘  └─────┬─────┘   │
+│        │                │               │                │         │
+│        └────────────────┼───────────────┼────────────────┘         │
+│                         │               │                          │
+└─────────────────────────┼───────────────┼──────────────────────────┘
+                          │ (User Action) │ (Display)
+                          ▼               ▲
+┌──────────────────────────────────────────────────────────────────────┐
+│                    QUERY PROCESSOR (Core Orchestrator)               │
+│  ┌────────────────────────────────────────────────────────────────┐  │
+│  │  1. Input Validation & Intent Classification ─→ [AMBIGUITY CHECK] │
+│  │  2. RAG Context Retrieval (Dynamic K) ←───────────┘            │  │
+│  │  3. SQL Generation (with Retry Loop) ──┐                       │  │
+│  │  4. SQL Validation (Short-circuit) ←───┘                       │  │
+│  │  5. Query Cost Estimation ─→ (Warn User)                       │  │
+│  │  6. Database Execution (with Circuit Breaker)                  │  │
+│  │  7. Result Formatting & Caching                                │  │
+│  └────────────────────────────────────────────────────────────────┘  │
+└──────────────────────────────────────────────────────────────────────┘
+                          │ (Calls to Engines)
+        ┌─────────────────┼──────────────────┬─────────────────┐
+        │                 │                  │                 │
+        ▼                 ▼                  ▼                 ▼
+┌───────────── ┐   ┌─────────────┐    ┌─────────────┐   ┌─────────────┐
+│  RAG Engine  │   │  LLM Engine │    │  Validation │   │  Database   │
+│(Relationship-│   │ (Ollama     │    │   Engine    │   │   Engine    │
+│    Aware)    │   │  Client)    │    │ (Security)  │   │ (Connection │
+└──────┬────── ┘   └──────┬──────┘    └─────────────┘   │    Pool)    │
+       │                  │                             └──────┬──────┘
+       ▼                  ▼                                     ▼
+┌─────────────┐   ┌─────────────┐                       ┌─────────────┐
+│  ChromaDB   │   │   Ollama    │                       │ SQL Server  │
+│(Vector Store)│  │(Local LLM)  │                       │ (Database)  │
+└─────────────┘   └─────────────┘                       └─────────────┘
+
+```
+
 ### **Data Flow Diagram**
 
 ```
