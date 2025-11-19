@@ -28,11 +28,17 @@ The following tables and columns are available:
 ### SQL Query
 """
 
-    def build_prompt(self, user_question: str, schema_elements: List[SchemaElement]) -> str:
+    def build_prompt(self, user_question: str, schema_elements: Optional[List[SchemaElement]] = None, context_str: Optional[str] = None) -> str:
         """
         Construct the prompt with schema context and user question.
         """
-        schema_context = self._format_schema(schema_elements)
+        if context_str:
+            schema_context = context_str
+        elif schema_elements:
+            schema_context = self._format_schema(schema_elements)
+        else:
+            schema_context = "No schema information provided."
+
         return self.DEFAULT_TEMPLATE.format(
             schema_context=schema_context,
             user_question=user_question
