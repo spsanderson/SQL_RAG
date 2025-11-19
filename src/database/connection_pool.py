@@ -20,7 +20,8 @@ class ConnectionPool:
         """
         Get the SQLAlchemy engine from the adapter.
         """
-        return self._adapter.connect()
+        self._engine = self._adapter.connect()
+        return self._engine
 
     def get_adapter(self) -> SQLServerAdapter:
         """
