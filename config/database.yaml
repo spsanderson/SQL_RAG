@@ -1,0 +1,35 @@
+# Database Configuration
+database:
+  sql_server:
+    # Connection settings
+    host: ${DB_HOST:localhost}
+    port: ${DB_PORT:1433}
+    database: ${DB_NAME:production}
+    username: ${DB_USER:readonly_user}
+    password: ${DB_PASSWORD}  # From environment variable
+  
+    # Connection pool settings
+    connection_pool:
+      min_size: 5
+      max_size: 20
+      timeout: 30  # seconds
+      max_overflow: 10
+      pool_recycle: 3600  # 1 hour
+  
+    # Query settings
+    query:
+      timeout: 30  # seconds
+      max_rows: 10000
+      default_limit: 1000
+  
+    # Schema management
+    schema:
+      refresh_interval: 86400  # 24 hours (seconds)
+      cache_enabled: true
+      cache_ttl: 3600  # 1 hour
+    
+  # Future database support
+  postgresql:
+    enabled: false
+  mysql:
+    enabled: false

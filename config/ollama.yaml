@@ -1,0 +1,32 @@
+# Ollama LLM Configuration
+ollama:
+  # Connection settings
+  base_url: http://localhost:11434
+  timeout: 45 # seconds
+
+  # Model settings
+  model:
+    name: sqlcoder:7b-q4
+    alternative: codellama:7b
+
+    # Generation parameters
+    temperature: 0.1 # Low for deterministic SQL
+    top_p: 0.9
+    top_k: 40
+    max_tokens: 512
+    stop_sequences:
+      - ";"
+      - "```"
+
+  # Performance settings
+  performance:
+    num_ctx: 2048 # Context window
+    num_thread: 8 # CPU threads
+    use_mmap: true
+    use_mlock: false
+
+  # Retry logic
+  retry:
+    max_attempts: 3
+    backoff_factor: 2
+    timeout_multiplier: 1.5

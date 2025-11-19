@@ -1,0 +1,20 @@
+# Security Configuration
+security:
+  # Authentication
+  auth:
+    enabled: true
+    provider: "local" # or "sso"
+
+  # Authorization
+  rbac:
+    enabled: true
+    default_role: "viewer"
+
+  # SQL Injection Prevention
+  sql_injection:
+    enabled: true
+    block_drop: true
+    block_truncate: true
+    block_alter: true
+    block_grant: true
+    block_revoke: true

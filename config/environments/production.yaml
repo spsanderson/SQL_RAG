@@ -1,0 +1,4 @@
+# Production Environment Configuration
+environment: production
+debug: false
+log_level: WARNING

@@ -1,0 +1,35 @@
+# RAG Configuration
+rag:
+  # Vector store settings
+  vector_store:
+    provider: chromadb
+    persist_directory: ./data/vector_db
+    collection_name: sql_schema
+
+    # Embedding settings
+    embedding:
+      model: all-MiniLM-L6-v2
+      dimension: 384
+      batch_size: 32
+      normalize: true
+
+    # Search settings
+    search:
+      top_k: 5
+      similarity_threshold: 0.7
+      search_type: similarity # or mmr
+      fetch_k: 20 # for MMR
+      lambda_mult: 0.5 # for MMR diversity
+
+  # Context retrieval
+  retrieval:
+    max_context_tokens: 2000
+    include_examples: true
+    include_business_rules: true
+    prioritize_recent: true
+
+  # Indexing settings
+  indexing:
+    batch_size: 100
+    chunk_size: 512
+    chunk_overlap: 50
