@@ -5,6 +5,10 @@ import os
 import sys
 import yaml
 from typing import Dict, Any
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 # Add src to path
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
