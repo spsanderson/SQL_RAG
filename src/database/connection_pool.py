@@ -5,6 +5,8 @@ from typing import Optional
 from sqlalchemy.engine import Engine
 from .models import DatabaseConfig
 from .adapters.sqlserver_adapter import SQLServerAdapter
+from .adapters.sqlite_adapter import SQLiteAdapter
+from .adapters.base_adapter import BaseAdapter
 
 class ConnectionPool:
     """
@@ -13,7 +15,10 @@ class ConnectionPool:
     
     def __init__(self, config: DatabaseConfig):
         self.config = config
-        self._adapter = SQLServerAdapter(config) # Currently hardcoded to SQL Server
+        if self.config.type == "sqlite":
+            self._adapter: BaseAdapter = SQLiteAdapter(config)
+        else:
+            self._adapter: BaseAdapter = SQLServerAdapter(config)
         self._engine: Optional[Engine] = None
 
     def get_engine(self) -> Engine:
@@ -23,7 +28,7 @@ class ConnectionPool:
         self._engine = self._adapter.connect()
         return self._engine
 
-    def get_adapter(self) -> SQLServerAdapter:
+    def get_adapter(self) -> BaseAdapter:
         """
         Get the underlying adapter instance.
         """

@@ -9,8 +9,10 @@ class PromptBuilder:
     Builds prompts for the LLM.
     """
     
-    DEFAULT_TEMPLATE = """
-You are an expert SQL developer. Your goal is to write a correct and efficient T-SQL query to answer the user's question.
+    def __init__(self, dialect: str = "T-SQL"):
+        self.dialect = dialect
+        self.DEFAULT_TEMPLATE = """
+You are an expert SQL developer. Your goal is to write a correct and efficient {dialect} query to answer the user's question.
 
 ### Database Schema
 The following tables and columns are available:
@@ -19,7 +21,7 @@ The following tables and columns are available:
 ### Instructions
 1. Return ONLY the SQL query.
 2. Do not include any explanations or markdown formatting.
-3. Use T-SQL syntax (SQL Server).
+3. Use {dialect} syntax.
 4. If the question cannot be answered with the given schema, return "NO_SQL".
 
 ### User Question
@@ -40,6 +42,7 @@ The following tables and columns are available:
             schema_context = "No schema information provided."
 
         return self.DEFAULT_TEMPLATE.format(
+            dialect=self.dialect,
             schema_context=schema_context,
             user_question=user_question
         )

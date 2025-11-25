@@ -48,12 +48,14 @@ def main():
     # For now, we'll use defaults or mock values if files aren't populated
     
     # Database Config
+    db_type = os.getenv("DB_TYPE", "sqlserver")
     db_config = DatabaseConfig(
         host=os.getenv("DB_HOST", "localhost"),
         port=int(os.getenv("DB_PORT", 1433)),
         database=os.getenv("DB_NAME", "MedicalDB"),
         username=os.getenv("DB_USER", "sa"),
-        password=os.getenv("DB_PASSWORD", "password")
+        password=os.getenv("DB_PASSWORD", "password"),
+        type=db_type
     )
     
     # LLM Config
@@ -70,7 +72,8 @@ def main():
 
     print("Setting up LLM client...")
     llm_client = OllamaClient(llm_config)
-    prompt_builder = PromptBuilder()
+    dialect = "SQLite" if db_type == "sqlite" else "T-SQL"
+    prompt_builder = PromptBuilder(dialect=dialect)
     sql_parser = SQLParser()
 
     print("Setting up RAG module...")
