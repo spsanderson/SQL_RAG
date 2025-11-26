@@ -15,10 +15,11 @@ class ConnectionPool:
     
     def __init__(self, config: DatabaseConfig):
         self.config = config
+        self._adapter: BaseAdapter
         if self.config.type == "sqlite":
-            self._adapter: BaseAdapter = SQLiteAdapter(config)
+            self._adapter = SQLiteAdapter(config)
         else:
-            self._adapter: BaseAdapter = SQLServerAdapter(config)
+            self._adapter = SQLServerAdapter(config)
         self._engine: Optional[Engine] = None
 
     def get_engine(self) -> Engine:
