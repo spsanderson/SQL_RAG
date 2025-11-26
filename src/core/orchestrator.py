@@ -10,7 +10,7 @@ from ..llm.sql_parser import SQLParser
 from ..rag.context_retriever import ContextRetriever
 from ..validation import SQLValidator
 from .logger import get_logger
-from .exceptions import SecurityError, LLMGenerationError
+from .exceptions import SecurityError
 
 logger = get_logger(__name__)
 
@@ -32,8 +32,7 @@ class RAGOrchestrator:
         self.prompt_builder = prompt_builder
         self.sql_parser = sql_parser
         self.query_executor = query_executor
-        self.sql_parser = sql_parser
-        self.query_executor = query_executor
+
         
         # Load schema for validation
         schema = self.query_executor.pool.get_adapter().get_schema()
