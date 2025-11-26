@@ -91,7 +91,7 @@ def load_config(config_path: Optional[str] = None) -> AppConfig:
         app_config = AppConfig(**config_data)
         
         # Specific business rule validation
-        if not app_config.database.password:
+        if app_config.database.type != "sqlite" and not app_config.database.password:
              raise ValueError("Database password is required (DB_PASSWORD env var or config file).")
              
         return app_config
