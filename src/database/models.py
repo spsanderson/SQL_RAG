@@ -13,7 +13,7 @@ class DatabaseConfig(BaseModel):
     port: int = Field(1433, description="Database port")
     database: str = Field(..., description="Database name")
     username: str = Field(..., description="Database username")
-    password: str = Field(..., description="Database password")
+    password: str = Field(..., repr=False, description="Database password")
     driver: str = Field("ODBC Driver 17 for SQL Server", description="ODBC driver name")
     type: str = Field("sqlserver", description="Database type (sqlserver, sqlite)")
 

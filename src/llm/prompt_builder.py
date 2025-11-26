@@ -34,6 +34,13 @@ The following tables and columns are available:
         """
         Construct the prompt with schema context and user question.
         """
+        # Input Validation
+        if not user_question or not user_question.strip():
+            raise ValueError("User question cannot be empty.")
+            
+        if len(user_question) > 500:
+            raise ValueError("User question is too long (max 500 characters).")
+
         if context_str:
             schema_context = context_str
         elif schema_elements:

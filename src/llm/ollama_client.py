@@ -3,8 +3,9 @@ Ollama Client
 """
 import time
 import requests
-from typing import Optional, Dict, Any, List
+from typing import List
 from .models import LLMConfig, LLMResponse
+from ..core.exceptions import LLMGenerationError
 
 class OllamaClient:
     """
@@ -45,10 +46,10 @@ class OllamaClient:
                 )
             except requests.RequestException as e:
                 if attempt == self.config.retry_attempts - 1:
-                    raise Exception(f"Failed to generate response from Ollama after {self.config.retry_attempts} attempts: {str(e)}") from e
+                    raise LLMGenerationError(f"Failed to generate response from Ollama after {self.config.retry_attempts} attempts: {str(e)}") from e
                 time.sleep(2 ** attempt)  # Exponential backoff
         
-        raise Exception("Unexpected error in Ollama generation")
+        raise LLMGenerationError("Unexpected error in Ollama generation")
 
     def list_models(self) -> List[str]:
         """

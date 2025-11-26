@@ -90,12 +90,16 @@ def main():
     parser.add_argument("--port", type=int, default=int(os.getenv("DB_PORT", 1433)), help="Database port")
     parser.add_argument("--database", default=os.getenv("DB_NAME", "MedicalDB"), help="Database name")
     parser.add_argument("--username", default=os.getenv("DB_USER", "sa"), help="Database username")
-    parser.add_argument("--password", default=os.getenv("DB_PASSWORD", "password"), help="Database password")
+    parser.add_argument("--password", default=os.getenv("DB_PASSWORD"), help="Database password")
     parser.add_argument("--persist-dir", default="./data/vector_db", help="Vector store persistence directory")
     
     parser.add_argument("--type", default=os.getenv("DB_TYPE", "sqlserver"), help="Database type")
     
     args = parser.parse_args()
+    
+    if not args.password:
+        print("Error: Password is required via --password or DB_PASSWORD env var.")
+        sys.exit(1)
     
     db_config = DatabaseConfig(
         host=args.host,

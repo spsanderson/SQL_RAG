@@ -21,7 +21,7 @@ class BaseAdapter(ABC):
         pass
 
     @abstractmethod
-    def execute_query(self, query: str, params: Optional[Dict[str, Any]] = None) -> QueryResult:
+    def execute_query(self, query: str, params: Optional[Dict[str, Any]] = None, timeout: Optional[int] = None) -> QueryResult:
         """
         Execute a SQL query and return the result.
         """
