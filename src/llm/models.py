@@ -10,7 +10,7 @@ class LLMConfig(BaseModel):
     Configuration for LLM client.
     """
     base_url: str = Field("http://localhost:11434", description="Ollama API base URL")
-    model_name: str = Field("sqlcoder:7b-q4", description="Name of the model to use")
+    model_name: str = Field("gemma:2b", description="Name of the model to use")
     timeout: int = Field(45, description="Request timeout in seconds")
     temperature: float = Field(0.1, description="Generation temperature")
     max_tokens: int = Field(512, description="Maximum tokens to generate")

@@ -31,4 +31,7 @@ class SQLParser:
         if cleaned.lower().startswith("sql query:"):
             cleaned = cleaned[10:].strip()
             
+        # Remove </start_of_turn> or other tags
+        cleaned = re.sub(r"<.*?>", "", cleaned).strip()
+            
         return cleaned
