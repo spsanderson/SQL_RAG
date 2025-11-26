@@ -71,4 +71,4 @@ class OllamaClient:
             data = response.json()
             return [model["name"] for model in data.get("models", [])]
         except requests.RequestException as e:
-            raise Exception(f"Failed to list models: {str(e)}") from e
+            raise LLMGenerationError(f"Failed to list models: {str(e)}") from e

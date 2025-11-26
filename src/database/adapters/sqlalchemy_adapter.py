@@ -93,5 +93,5 @@ class SQLAlchemyAdapter(BaseAdapter):
             with engine.connect() as connection:
                 connection.execute(text("SELECT 1"))
             return True
-        except Exception:
+        except SQLAlchemyError:
             return False

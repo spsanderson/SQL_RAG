@@ -29,6 +29,7 @@ from src.core.logger import setup_logging, get_logger
 logger = get_logger(__name__)
 
 from src.core.config import load_config
+from src.core.exceptions import ConfigurationError, SQLRAGException
 
 def main():
     """
@@ -43,9 +44,13 @@ def main():
         # Check for config file arg or default location
         config_path = "config/config.yaml" if os.path.exists("config/config.yaml") else None
         app_config = load_config(config_path)
-    except Exception as e:
+    except ConfigurationError as e:
         logger.error(f"Startup failed: {e}")
         print(f"Startup failed: {e}")
+        return
+    except Exception as e:
+        logger.error(f"Unexpected startup error: {e}", exc_info=True)
+        print(f"Unexpected startup error: {e}")
         return
 
     db_config = app_config.database
@@ -118,9 +123,12 @@ def main():
 
         except KeyboardInterrupt:
             break
+        except SQLRAGException as e:
+            logger.error(f"Application error: {e}")
+            print(f"Error: {e}")
         except Exception as e:
-            logger.error(f"An error occurred: {str(e)}", exc_info=True)
-            print(f"An error occurred: {str(e)}")
+            logger.error(f"An unexpected error occurred: {str(e)}", exc_info=True)
+            print(f"An unexpected error occurred: {str(e)}")
 
     print("\nGoodbye!")
 

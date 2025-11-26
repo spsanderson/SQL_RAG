@@ -10,7 +10,7 @@ from ..llm.sql_parser import SQLParser
 from ..rag.context_retriever import ContextRetriever
 from ..validation import SQLValidator
 from .logger import get_logger
-from .exceptions import SecurityError
+from .exceptions import SecurityError, LLMGenerationError, DatabaseError
 
 logger = get_logger(__name__)
 
@@ -117,12 +117,19 @@ class RAGOrchestrator:
                     result["status"] = "error"
                     result["error"] = f"Security Violation after {max_retries} attempts: {str(e)}"
                     return result
-            except Exception as e:
+            except LLMGenerationError as e:
                 logger.warning(f"Generation failed on attempt {current_try}: {e}")
                 last_error = str(e)
                 if current_try == max_retries:
                     result["status"] = "error"
                     result["error"] = f"Generation failed: {str(e)}"
+                    return result
+            except Exception as e:
+                logger.error(f"Unexpected error on attempt {current_try}: {e}", exc_info=True)
+                last_error = str(e)
+                if current_try == max_retries:
+                    result["status"] = "error"
+                    result["error"] = f"Unexpected error: {str(e)}"
                     return result
 
         # 5. Execute SQL
@@ -143,8 +150,17 @@ class RAGOrchestrator:
                     "name": "execution",
                     "duration": time.time() - execution_start
                 })
+            except DatabaseError as e:
+                logger.error(f"Query execution failed: {e}")
+                result["status"] = "error"
+                result["error"] = str(e)
+                result["steps"].append({
+                    "name": "execution",
+                    "duration": time.time() - execution_start,
+                    "error": str(e)
+                })
             except Exception as e:
-                logger.error(f"Query execution failed: {e}", exc_info=True)
+                logger.error(f"Unexpected execution error: {e}", exc_info=True)
                 result["status"] = "error"
                 result["error"] = str(e)
                 result["steps"].append({
