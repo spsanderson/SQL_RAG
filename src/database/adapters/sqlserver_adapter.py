@@ -20,7 +20,7 @@ class SQLServerAdapter(SQLAlchemyAdapter):
         self._engine: Optional[Engine] = None
         self._connection_string = self._build_connection_string()
 
-    def _build_connection_string(self) -> str:
+    def _build_connection_string(self) -> URL:
         """
         Build the SQLAlchemy connection string for SQL Server.
         """
