@@ -39,3 +39,9 @@ data/logs/
 *.log
 .env.*
 ! .env.example
+
+# Testing artifacts
+.coverage
+*.db
+!demo.db
+.pytest_cache/
