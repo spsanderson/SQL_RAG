@@ -2,6 +2,7 @@
 Configuration Management Module
 """
 import os
+import re
 import yaml
 from typing import Dict, Any, Optional
 from pydantic import BaseModel, Field
@@ -57,13 +58,33 @@ def load_config(config_path: Optional[str] = None) -> AppConfig:
     # Load specific config files
     config_dir = "config"
     
+    def substitute_env_vars(value: Any) -> Any:
+        if isinstance(value, str):
+            # Regex to match ${VAR} or ${VAR:default}
+            pattern = r'\$\{([^}:]+)(?::([^}]+))?\}'
+            def replace(match):
+                var_name = match.group(1)
+                default_value = match.group(2)
+                return os.getenv(var_name, default_value if default_value is not None else "")
+            
+            # If the entire string is the variable, we might want to cast the result
+            # But for now, let's just replace. Pydantic can handle type coercion usually.
+            # However, for port (int), "1433" string is fine.
+            return re.sub(pattern, replace, value)
+        elif isinstance(value, dict):
+            return {k: substitute_env_vars(v) for k, v in value.items()}
+        elif isinstance(value, list):
+            return [substitute_env_vars(v) for v in value]
+        return value
+
     # Helper to load yaml
     def load_yaml(filename: str) -> Dict[str, Any]:
         path = os.path.join(config_dir, filename)
         if os.path.exists(path):
             try:
                 with open(path, 'r') as f:
-                    return yaml.safe_load(f) or {}
+                    data = yaml.safe_load(f) or {}
+                    return substitute_env_vars(data)
             except (OSError, yaml.YAMLError) as e:
                 # Log warning but continue? Or raise?
                 # For now, let's raise as these are expected to be valid if present
