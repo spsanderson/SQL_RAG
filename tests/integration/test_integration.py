@@ -63,7 +63,7 @@ def orchestrator(db_config, mock_llm_client, mock_retriever):
 def test_full_flow_success(orchestrator, mock_llm_client):
     # Mock LLM response
     mock_llm_client.generate.return_value = LLMResponse(
-        content="SELECT * FROM patients",
+        content="SELECT * FROM patients LIMIT 10",
         model="test-model"
     )
     
@@ -72,13 +72,13 @@ def test_full_flow_success(orchestrator, mock_llm_client):
     assert result["status"] == "success"
     assert len(result["data"]["rows"]) == 1
     assert result["data"]["rows"][0]["name"] == "John Doe"
-    assert result["generated_sql"] == "SELECT * FROM patients"
+    assert result["generated_sql"] == "SELECT * FROM patients LIMIT 10"
 
 def test_full_flow_validation_error_retry(orchestrator, mock_llm_client):
     # Mock LLM response: first invalid, then valid
     mock_llm_client.generate.side_effect = [
         LLMResponse(content="DROP TABLE patients", model="test-model"),
-        LLMResponse(content="SELECT * FROM patients", model="test-model")
+        LLMResponse(content="SELECT * FROM patients LIMIT 10", model="test-model")
     ]
     
     result = orchestrator.process_query("Delete patients")
