@@ -16,6 +16,8 @@ class LLMConfig(BaseModel):
     max_tokens: int = Field(512, description="Maximum tokens to generate")
     top_p: float = Field(0.9, description="Top P sampling")
     retry_attempts: int = Field(3, description="Number of retry attempts")
+    rate_limit_requests: int = Field(60, description="Max requests per period")
+    rate_limit_period: float = Field(60.0, description="Rate limit period in seconds")
 
 @dataclass
 class LLMResponse:

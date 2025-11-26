@@ -6,6 +6,7 @@ import requests
 from typing import List
 from .models import LLMConfig, LLMResponse
 from ..core.exceptions import LLMGenerationError
+from ..core.rate_limiter import RateLimiter
 
 class OllamaClient:
     """
@@ -14,11 +15,19 @@ class OllamaClient:
     
     def __init__(self, config: LLMConfig):
         self.config = config
+        self.rate_limiter = RateLimiter(
+            max_calls=config.rate_limit_requests,
+            period=config.rate_limit_period
+        )
 
     def generate(self, prompt: str) -> LLMResponse:
         """
         Generate text from a prompt using the configured model.
         """
+        # Acquire rate limit token
+        if not self.rate_limiter.acquire(timeout=self.config.timeout):
+            raise LLMGenerationError("Rate limit exceeded")
+
         url = f"{self.config.base_url}/api/generate"
         payload = {
             "model": self.config.model_name,
