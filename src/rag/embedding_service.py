@@ -1,7 +1,7 @@
 """
 Embedding Service
 """
-from typing import List
+from typing import List, Optional
 from sentence_transformers import SentenceTransformer
 from .models import RAGConfig
 
@@ -12,7 +12,7 @@ class EmbeddingService:
     
     def __init__(self, config: RAGConfig):
         self.config = config
-        self._model = None
+        self._model: Optional[SentenceTransformer] = None
 
     @property
     def model(self) -> SentenceTransformer:
