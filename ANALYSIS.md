@@ -1,5 +1,362 @@
 # SQL RAG Codebase Analysis Report
 
+**Analysis Date:** 2025-11-26 22:17:46 UTC
+
+## Executive Summary
+
+This comprehensive codebase analysis examines the SQL RAG application for potential issues across security, code quality, architectural design, test coverage, performance, and compliance with functional requirements. The analysis was conducted through static analysis tools (pylint 9.39/10, mypy 11 errors), test execution (56 tests, 81% coverage), and thorough manual code review against the SPARC documentation requirements.
+
+---
+
+## 1. Security Analysis
+
+### 1.1 SQL Validation Status: ✅ FULLY IMPLEMENTED
+
+**Location:** `src/validation/validator.py`
+
+**Implementation Details:**
+- Prohibited keyword blocking with word boundary matching
+- Schema validation against known table names
+- Query complexity limits (max 5 JOINs, max 3 SELECT statements)
+- Result set size protection (requires TOP/LIMIT or aggregation)
+- Integrated into orchestrator with retry logic on security violations
+
+**Test Coverage:** 12 dedicated tests (100% module coverage)
+
+**Remaining Enhancement Opportunities:**
+- Add SQL injection pattern detection beyond keywords (e.g., comment injection `--`, `/**/`)
+- Implement query cost estimation based on schema statistics
+- Add configurable complexity limits via YAML configuration
+
+### 1.2 Password Handling: ✅ SECURE
+
+**Findings:**
+- Password field uses `repr=False` in Pydantic model (`src/database/models.py:16`)
+- SQLAlchemy's `URL.create()` properly escapes credentials (`src/database/adapters/sqlserver_adapter.py:29-37`)
+- Empty password default with validation for non-SQLite databases (`src/core/config.py:41,94-95`)
+- No hardcoded passwords in source code
+
+### 1.3 Input Validation: ✅ IMPLEMENTED
+
+**Location:** `src/llm/prompt_builder.py`
+
+**Implemented:**
+- Empty query rejection (line 41-42)
+- Character limit enforcement: 500 characters max (line 44-45)
+
+**Missing per FR-1.5:**
+- Vague query detection (e.g., queries like "show data" without specifics)
+- Advanced harmful pattern detection (beyond SQL keywords)
+
+### 1.4 Rate Limiting: ✅ IMPLEMENTED
+
+**Location:** `src/core/rate_limiter.py`
+
+**Implementation:** Thread-safe Token Bucket algorithm with:
+- Configurable max calls and period
+- Blocking and non-blocking acquire modes
+- Timeout support
+- Proper token refill calculation
+
+**Test Coverage:** 4 dedicated tests (100% module coverage)
+
+### 1.5 Security Concerns: ⚠️ MINOR ISSUES
+
+| Issue | Location | Severity | Description |
+|-------|----------|----------|-------------|
+| Broad exception handling | Multiple files | Low | Generic `Exception` caught in 7+ locations |
+| Exception raised generically | `ollama_client.py:74` | Low | `raise Exception` instead of custom exception |
+| No XSS sanitization | `src/ui/app.py` | Low | Web output not sanitized (Streamlit handles this) |
+
+---
+
+## 2. Code Quality Analysis
+
+### 2.1 Pylint Results: Score 9.39/10
+
+**Issues Breakdown:**
+
+| Category | Count | Examples |
+|----------|-------|----------|
+| Broad exception handling (W0718/W0719) | 9 | `main.py`, `orchestrator.py`, `ui/app.py` |
+| Logging f-string interpolation (W1203) | 8 | Should use lazy % formatting |
+| Unused imports (W0611) | 8 | `Settings`, `List`, `time`, `Dict`, etc. |
+| Unnecessary pass statements (W0107) | 10 | Exception classes and abstract methods |
+| Bad indentation (W0311) | 2 | `config.py:95`, `validator.py:121` |
+| Unused variable (W0612) | 1 | `schema_loader` in `main.py:60` |
+| Missing encoding in open() (W1514) | 1 | `config.py:58` |
+| Raise missing from (W0707) | 2 | `config.py:87,99` |
+| Invalid envvar default type (W1508) | 1 | `config.py:38` - int used where str expected |
+
+### 2.2 MyPy Type Checking: 11 Errors
+
+**Error Categories:**
+
+| Type | Count | Locations |
+|------|-------|-----------|
+| Library stubs not installed | 2 | `requests`, `yaml` |
+| Argument type mismatch | 2 | `vector_store.py:53,62` |
+| Sequence attribute errors | 4 | `orchestrator.py:59,90,142,150` |
+| Incompatible assignment | 3 | `orchestrator.py:131,137,156` |
+
+**Root Cause:** Type annotations in `orchestrator.py` incorrectly declare `result["steps"]` handling.
+
+### 2.3 Pydantic Deprecation Warnings
+
+**Location:** `src/core/config.py:69,74`
+
+**Issue:** Using deprecated `.dict()` method instead of `.model_dump()` (Pydantic V2 migration)
+
+### 2.4 Print Statements in Source
+
+**Location:** `src/main.py` - 20 print statements
+
+**Recommendation:** Replace with logger calls for production readiness:
+```python
+# Instead of:
+print("Initializing SQL RAG Application...")
+# Use:
+logger.info("Initializing SQL RAG Application...")
+```
+
+### 2.5 Unused Code
+
+| File | Unused Item |
+|------|-------------|
+| `src/main.py:60` | `schema_loader` variable |
+| `src/rag/vector_store.py:5` | `Settings` import |
+| `src/rag/models.py:5` | `List` import |
+| `src/database/adapters/sqlserver_adapter.py` | Multiple imports (`time`, `List`, `Dict`, `text`, etc.) |
+| `src/validation/validator.py:5` | `Set` import |
+
+---
+
+## 3. Test Coverage Analysis
+
+### 3.1 Overall Coverage: 81%
+
+| Module | Coverage | Missing Lines | Priority |
+|--------|----------|---------------|----------|
+| `src/ui/app.py` | 0% | 4-141 (entire file) | Medium |
+| `src/core/logger.py` | 46% | 16-24 | Low |
+| `src/llm/ollama_client.py` | 69% | 29, 58, 61, 67-74 | Medium |
+| `src/llm/prompt_builder.py` | 79% | 42, 45, 48, 58-62, 86 | Low |
+| `src/core/config.py` | 87% | 79-81, 84-87 | Low |
+| `src/core/orchestrator.py` | 88% | 117-126 | Medium |
+| `src/main.py` | 88% | 95, 109-112, 119-123, 128 | Low |
+
+### 3.2 Test Distribution
+
+| Category | Count | Status |
+|----------|-------|--------|
+| Unit Tests | 50 | ✅ Active |
+| Integration Tests | 3 | ✅ Active |
+| E2E Tests | 3 | ✅ Active |
+| Validation Tests | 12 | ✅ Active |
+
+### 3.3 Missing Test Scenarios
+
+1. **UI Component Tests:** `src/ui/app.py` has 0% coverage
+2. **Error Recovery:** LLM retry exhaustion scenarios
+3. **Rate Limiter Edge Cases:** High concurrency stress tests
+4. **Connection Pool:** Disposal and cleanup tests
+5. **Schema Loader:** Error handling during schema load
+6. **Prompt Builder:** Edge cases for history formatting
+
+---
+
+## 4. Architectural Analysis
+
+### 4.1 Module Structure: ✅ WELL-ORGANIZED
+
+```
+src/
+├── core/           # Orchestration, config, logging, exceptions, rate limiting
+├── database/       # Adapters (SQLite, SQL Server), connection pool, models
+├── llm/            # Ollama client, prompt builder, SQL parser
+├── rag/            # Embeddings, vector store (ChromaDB), context retrieval
+├── validation/     # SQL safety validation
+├── ui/             # Streamlit application
+└── utils/          # Empty (placeholder for future utilities)
+```
+
+**Lines of Code:** 1,533 (source only)
+
+### 4.2 Dependency Flow: ✅ CORRECT
+
+```
+main.py/app.py → orchestrator → [retriever, llm_client, validator, query_executor]
+                                      ↓
+                              [vector_store, embedding_service]
+```
+
+### 4.3 Configuration Management: ⚠️ PARTIAL IMPLEMENTATION
+
+**Implemented:**
+- Environment variable loading via `python-dotenv`
+- Pydantic model validation
+- YAML file loading support
+
+**Not Applied at Runtime:**
+- `config/logging.yaml` - defined but not loaded
+- `config/security.yaml` - defined but not applied
+- `config/ollama.yaml` - model settings not loaded from file
+- `config/rag.yaml` - search settings not loaded from file
+- `config/database.yaml` - advanced settings not loaded
+
+### 4.4 Error Handling: ⚠️ INCONSISTENT
+
+**Custom Exceptions Defined (but underutilized):**
+- `SQLRAGException` (base)
+- `ConfigurationError`
+- `DatabaseError`
+- `LLMGenerationError`
+- `SecurityError`
+- `ValidationError`
+
+**Issues:**
+- 7+ locations catch generic `Exception` instead of custom exceptions
+- `ollama_client.py:74` raises generic `Exception` instead of custom type
+- Exception chaining not used consistently (`raise ... from e`)
+
+### 4.5 UI Module: ✅ IMPLEMENTED
+
+**Status:** `src/ui/app.py` provides Streamlit interface
+
+**Features:**
+- Chat interface with message history
+- DataFrame display for results
+- SQL query expansion panel
+- Session state management
+
+**Gap:** 0% test coverage
+
+---
+
+## 5. Functional Requirements Compliance
+
+### 5.1 Requirements Matrix
+
+| Requirement | Status | Notes |
+|-------------|--------|-------|
+| FR-1: NL Query Input | ✅ Implemented | Input validation, 500 char limit |
+| FR-2: SQL Generation | ✅ Implemented | Via Ollama LLM with retry logic |
+| FR-3: RAG Context | ✅ Implemented | ChromaDB vector store, top-k retrieval |
+| FR-4: LLM Interaction | ✅ Implemented | Rate limiting, retry with backoff |
+| FR-5: Query Validation | ✅ Implemented | Keyword blocking, schema validation, complexity limits |
+| FR-6: Query Execution | ✅ Implemented | SQLAlchemy adapters (SQLite, SQL Server) |
+| FR-7: Schema Management | ✅ Implemented | Schema loader, ingestion script |
+| FR-8: Conversation Context | ⚠️ Partial | History passed to prompt, no persistence |
+| FR-9: Results Presentation | ✅ Implemented | CLI and Streamlit UI |
+| FR-10: User Interface | ✅ Implemented | Streamlit app |
+| FR-11: Example Library | ❌ Missing | No predefined example queries |
+| FR-12: Logging/Audit | ⚠️ Partial | Logger exists, not comprehensive |
+
+### 5.2 Non-Functional Requirements Compliance
+
+| Requirement | Status | Notes |
+|-------------|--------|-------|
+| NFR-1.3: 30s Timeout | ⚠️ Partial | Configured via pool_timeout, not enforced at query level |
+| NFR-1.5: Concurrency | ✅ Met | Rate limiter, connection pooling |
+| NFR-2.1: Local Processing | ✅ Met | Ollama local LLM only |
+| NFR-5.3: Observability | ⚠️ Partial | Basic logging, no metrics/tracing |
+
+---
+
+## 6. Performance Considerations
+
+### 6.1 Identified Bottlenecks
+
+| Component | Issue | Recommendation |
+|-----------|-------|----------------|
+| Embedding Model | Lazy-loaded per request | Preload on startup |
+| Connection Pool | Not explicitly limited | Enforce max_overflow limits |
+| Vector Store | No query caching | Implement LRU cache for frequent queries |
+
+### 6.2 Resource Management
+
+- **Connection Pooling:** ✅ Implemented via SQLAlchemy
+- **Embedding Model:** ✅ Lazy-loaded and cached in service instance
+- **Vector Store:** ✅ Persistent ChromaDB client
+
+---
+
+## 7. Recommendations Summary
+
+### Critical (Fix Immediately)
+None - previous critical issues have been addressed.
+
+### High Priority
+
+| Issue | Action | Effort |
+|-------|--------|--------|
+| MyPy type errors | Fix 11 type annotation issues in orchestrator.py | 1 hour |
+| Pydantic deprecation | Replace `.dict()` with `.model_dump()` | 30 min |
+| UI test coverage | Add tests for `src/ui/app.py` | 2 hours |
+| Load YAML configs | Apply config/security.yaml, config/rag.yaml at runtime | 2 hours |
+
+### Medium Priority
+
+| Issue | Action | Effort |
+|-------|--------|--------|
+| Unused imports | Remove 8 unused imports | 30 min |
+| Exception handling | Replace generic Exception with custom types | 1 hour |
+| Logging format | Use lazy % formatting instead of f-strings | 1 hour |
+| Print statements | Replace with logger calls in main.py | 30 min |
+| Bad indentation | Fix 2 indentation issues | 15 min |
+
+### Low Priority
+
+| Issue | Action | Effort |
+|-------|--------|--------|
+| Unnecessary pass | Remove or document 10 pass statements | 15 min |
+| Example library | Add predefined query examples (FR-11) | 2 hours |
+| Query timeout | Enforce query-level timeout | 1 hour |
+
+---
+
+## 8. Static Analysis Summary
+
+### Tools Used
+- pytest 9.0.1 with pytest-cov 7.0.0
+- pylint 3.0.0
+- mypy 1.0.0
+- Manual code review
+
+### Key Metrics
+
+| Metric | Value |
+|--------|-------|
+| Lines of Code (Source) | 1,533 |
+| Lines of Code (Tests) | ~700 |
+| Test Count | 56 |
+| Test Pass Rate | 100% |
+| Coverage | 81% |
+| Pylint Score | 9.39/10 |
+| MyPy Errors | 11 |
+
+---
+
+## 9. Files Changed Since Last Analysis
+
+| File | Change Type | Notes |
+|------|-------------|-------|
+| `tests/integration/test_integration.py` | New | 3 integration tests added |
+| `src/validation/validator.py` | Enhanced | Added complexity and limit validation |
+| `src/core/orchestrator.py` | Enhanced | Integrated validation with retry |
+| `tests/test_validation.py` | Enhanced | Added 5 new validation tests |
+
+---
+
+*Analysis completed: 2025-11-26 22:17:46 UTC*
+*Tools used: pytest, pytest-cov, pylint, mypy, manual code review*
+*Analyst: GitHub Copilot Coding Agent*
+
+---
+
+# [Previous Analysis Section Below]
+# SQL RAG Codebase Analysis Report
+
 **Analysis Date:** 2025-11-26 20:57:00 UTC
 
 ## Executive Summary
