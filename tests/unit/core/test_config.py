@@ -7,7 +7,7 @@ from unittest.mock import patch, mock_open
 from src.core.config import load_config, AppConfig, DatabaseConfig
 
 def test_load_config_defaults():
-    with patch.dict(os.environ, {}, clear=True):
+    with patch.dict(os.environ, {"DB_PASSWORD": "default-password"}, clear=True):
         config = load_config()
         assert config.database.host == "localhost"
         assert config.database.type == "sqlserver"
@@ -32,6 +32,7 @@ def test_load_config_file():
     database:
       host: yaml-host
       port: 5678
+      password: yaml-password
     llm:
       model_name: yaml-model
     """
