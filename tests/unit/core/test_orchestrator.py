@@ -2,7 +2,7 @@
 Test RAG Orchestrator
 """
 import pytest
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 from src.core.orchestrator import RAGOrchestrator
 from src.llm.models import LLMResponse
 from src.database.models import QueryResult
@@ -19,7 +19,15 @@ def orchestrator_mocks():
 
 @pytest.fixture
 def orchestrator(orchestrator_mocks):
-    return RAGOrchestrator(**orchestrator_mocks)
+    with patch('src.core.orchestrator.SQLValidator') as MockValidator:
+        # Configure mock validator instance
+        mock_validator_instance = MockValidator.return_value
+        mock_validator_instance.validate_query.return_value = True
+        mock_validator_instance.validate_schema.return_value = True
+        mock_validator_instance.validate_complexity.return_value = True
+        mock_validator_instance.enforce_result_limit.return_value = True
+        
+        yield RAGOrchestrator(**orchestrator_mocks)
 
 def test_process_query_success(orchestrator, orchestrator_mocks):
     """
