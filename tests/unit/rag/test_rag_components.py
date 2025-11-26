@@ -25,8 +25,6 @@ def mock_embedding_service(rag_config):
     service.embed_query.return_value = [0.1, 0.2, 0.3]
     service.embed_documents.return_value = [[0.1, 0.2, 0.3], [0.4, 0.5, 0.6]]
     return service
-
-@pytest.fixture
 def mock_chroma_client():
     with patch("src.rag.vector_store.chromadb.PersistentClient") as mock_client:
         yield mock_client
