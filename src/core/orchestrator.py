@@ -2,7 +2,7 @@
 RAG Orchestrator
 """
 import time
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List
 from ..database.query_executor import QueryExecutor
 from ..llm.ollama_client import OllamaClient
 from ..llm.prompt_builder import PromptBuilder
@@ -32,11 +32,20 @@ class RAGOrchestrator:
         self.prompt_builder = prompt_builder
         self.sql_parser = sql_parser
         self.query_executor = query_executor
-        self.validator = SQLValidator()
+        self.sql_parser = sql_parser
+        self.query_executor = query_executor
+        
+        # Load schema for validation
+        schema = self.query_executor.pool.get_adapter().get_schema()
+        self.validator = SQLValidator(schema)
 
-    def process_query(self, user_question: str) -> Dict[str, Any]:
+    def process_query(self, user_question: str, history: Optional[List[Dict[str, Any]]] = None) -> Dict[str, Any]:
         """
         Process a user question and return the results.
+        
+        Args:
+            user_question: The user's question.
+            history: Optional list of chat history messages.
         """
         start_time = time.time()
         result = {
@@ -57,7 +66,8 @@ class RAGOrchestrator:
         # 2. Build Prompt
         prompt = self.prompt_builder.build_prompt(
             user_question=user_question,
-            context_str=context_str
+            context_str=context_str,
+            history=history
         )
 
         # 3. Generate SQL with Retry
@@ -94,6 +104,9 @@ class RAGOrchestrator:
 
                 # Validate SQL
                 self.validator.validate_query(sql_query)
+                self.validator.validate_schema(sql_query)
+                self.validator.validate_complexity(sql_query)
+                self.validator.enforce_result_limit(sql_query)
                 
                 # If we get here, validation passed
                 break
