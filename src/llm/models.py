@@ -2,7 +2,7 @@
 LLM Models
 """
 from dataclasses import dataclass
-from typing import List, Optional, Dict, Any
+from typing import Optional
 from pydantic import BaseModel, Field
 
 class LLMConfig(BaseModel):
