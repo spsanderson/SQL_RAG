@@ -38,8 +38,8 @@ class VectorStore:
         self._collection.add(
             ids=ids,
             documents=texts,
-            embeddings=embeddings,
-            metadatas=metadatas
+            embeddings=embeddings, # type: ignore
+            metadatas=metadatas # type: ignore
         )
 
     def query(self, query_text: str, n_results: Optional[int] = None) -> List[Document]:
