@@ -75,7 +75,7 @@ The following tables and columns are available:
         """
         Format schema elements into a string representation.
         """
-        tables = {}
+        tables: Dict[str, List[str]] = {}
         for element in schema_elements:
             if element.type == 'table':
                 tables[element.name] = []
