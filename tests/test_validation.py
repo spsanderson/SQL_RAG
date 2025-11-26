@@ -2,7 +2,8 @@
 Tests for SQLValidator
 """
 import pytest
-from src.validation.validator import SQLValidator, SecurityException
+from src.validation.validator import SQLValidator
+from src.core.exceptions import SecurityError
 
 def test_validator_valid_query():
     validator = SQLValidator()
@@ -12,25 +13,25 @@ def test_validator_valid_query():
 def test_validator_prohibited_drop():
     validator = SQLValidator()
     query = "DROP TABLE patients"
-    with pytest.raises(SecurityException):
+    with pytest.raises(SecurityError):
         validator.validate_query(query)
 
 def test_validator_prohibited_delete():
     validator = SQLValidator()
     query = "DELETE FROM patients WHERE id = 1"
-    with pytest.raises(SecurityException):
+    with pytest.raises(SecurityError):
         validator.validate_query(query)
 
 def test_validator_prohibited_update():
     validator = SQLValidator()
     query = "UPDATE patients SET name = 'hacker'"
-    with pytest.raises(SecurityException):
+    with pytest.raises(SecurityError):
         validator.validate_query(query)
 
 def test_validator_case_insensitive():
     validator = SQLValidator()
     query = "drop table patients"
-    with pytest.raises(SecurityException):
+    with pytest.raises(SecurityError):
         validator.validate_query(query)
 
 def test_validator_embedded_keyword():
@@ -42,5 +43,5 @@ def test_validator_embedded_keyword():
 
 def test_validator_empty_query():
     validator = SQLValidator()
-    with pytest.raises(SecurityException):
+    with pytest.raises(SecurityError):
         validator.validate_query("")
