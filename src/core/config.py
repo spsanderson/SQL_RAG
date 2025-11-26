@@ -40,7 +40,7 @@ def load_config(config_path: Optional[str] = None) -> AppConfig:
         username=os.getenv("DB_USER", "sa"),
         password=os.getenv("DB_PASSWORD", ""), # Empty default, validation happens later
         type=os.getenv("DB_TYPE", "sqlserver")
-    )
+    ) # type: ignore
     
     llm_config = LLMConfig() # type: ignore
     rag_config = RAGConfig() # type: ignore
