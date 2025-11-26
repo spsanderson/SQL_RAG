@@ -42,8 +42,8 @@ def load_config(config_path: Optional[str] = None) -> AppConfig:
         type=os.getenv("DB_TYPE", "sqlserver")
     )
     
-    llm_config = LLMConfig()
-    rag_config = RAGConfig()
+    llm_config = LLMConfig() # type: ignore
+    rag_config = RAGConfig() # type: ignore
     
     config_data = {
         "database": db_config,
@@ -88,7 +88,7 @@ def load_config(config_path: Optional[str] = None) -> AppConfig:
 
     # Final Validation
     try:
-        app_config = AppConfig(**config_data)
+        app_config = AppConfig(**config_data) # type: ignore
         
         # Specific business rule validation
         if app_config.database.type != "sqlite" and not app_config.database.password:
