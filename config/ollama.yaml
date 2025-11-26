@@ -6,7 +6,7 @@ ollama:
 
   # Model settings
   model:
-    name: minimax-m2:cloud
+    name: sqlcoder:7b-q4 #minimax-m2:cloud
     alternative: codellama:7b
 
     # Generation parameters
