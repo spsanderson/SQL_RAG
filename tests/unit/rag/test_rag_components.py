@@ -25,6 +25,7 @@ def mock_embedding_service(rag_config):
     service.embed_query.return_value = [0.1, 0.2, 0.3]
     service.embed_documents.return_value = [[0.1, 0.2, 0.3], [0.4, 0.5, 0.6]]
     return service
+@pytest.fixture
 def mock_chroma_client():
     with patch("src.rag.vector_store.chromadb.PersistentClient") as mock_client:
         yield mock_client
@@ -40,10 +41,12 @@ def test_embedding_service(rag_config):
         mock_model.assert_called_once()
         
         # Test embedding
-        mock_model.return_value.encode.return_value = [[0.1, 0.2]]
+        mock_model.return_value.encode.return_value = MagicMock()
+        mock_model.return_value.encode.return_value.__getitem__.return_value.tolist.return_value = [0.1, 0.2]
         assert service.embed_query("test") == [0.1, 0.2]
         
-        mock_model.return_value.encode.return_value = [[0.1, 0.2], [0.3, 0.4]]
+        mock_model.return_value.encode.return_value = MagicMock()
+        mock_model.return_value.encode.return_value.tolist.return_value = [[0.1, 0.2], [0.3, 0.4]]
         assert service.embed_documents(["t1", "t2"]) == [[0.1, 0.2], [0.3, 0.4]]
 
 def test_vector_store(rag_config, mock_embedding_service, mock_chroma_client):
@@ -87,7 +90,7 @@ def test_context_retriever(rag_config):
     # If distance, then similarity = 1 - distance (approx for cosine).
     
     results = retriever.retrieve("query")
-    mock_store.query.assert_called_with("query", n_results=2)
+    mock_store.query.assert_called_with(query_text="query", n_results=2)
     
     # Test format
     context = retriever.format_context(results)
