@@ -1,6 +1,7 @@
 """
 SQL Validator Module
 """
+import re
 from typing import List, Optional
 from ..core.exceptions import SecurityError
 
