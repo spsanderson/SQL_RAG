@@ -48,9 +48,16 @@ def ingest_schema(db_config: DatabaseConfig, rag_config: RAGConfig):
         print("Converting to documents...")
         documents = []
         for element in schema_elements:
+            # Manual descriptions overrides
+            manual_descriptions = {
+                "healthyR_data": "Contains detailed patient visit data including length of stay, charges, and readmission flags. Use this for analysis of hospital stays, visits, and financial data.",
+                "Visits": "Basic visit log. For detailed analysis of length of stay or charges, use healthyR_data instead."
+            }
+            
             # Create a rich text representation for embedding
             if element.type == 'table':
-                content = f"Table: {element.name}\nDescription: {element.description or 'No description'}"
+                description = manual_descriptions.get(element.name, element.description or 'No description')
+                content = f"Table: {element.name}\nDescription: {description}"
             elif element.type == 'column':
                 content = f"Column: {element.name}\nType: {element.metadata.get('dtype')}\nTable: {element.metadata.get('table')}\nDescription: {element.description or 'No description'}"
             else:
@@ -86,6 +93,8 @@ def main():
     parser.add_argument("--password", default=os.getenv("DB_PASSWORD", "password"), help="Database password")
     parser.add_argument("--persist-dir", default="./data/vector_db", help="Vector store persistence directory")
     
+    parser.add_argument("--type", default=os.getenv("DB_TYPE", "sqlserver"), help="Database type")
+    
     args = parser.parse_args()
     
     db_config = DatabaseConfig(
@@ -93,7 +102,8 @@ def main():
         port=args.port,
         database=args.database,
         username=args.username,
-        password=args.password
+        password=args.password,
+        type=args.type
     )
     
     rag_config = RAGConfig(persist_directory=args.persist_dir)
