@@ -79,7 +79,7 @@ The following tables and columns are available:
         for element in schema_elements:
             if element.type == 'table':
                 tables[element.name] = []
-            elif element.type == 'column':
+            elif element.type == 'column' and element.metadata:
                 table_name = element.metadata.get('table')
                 if table_name:
                     if table_name not in tables:
