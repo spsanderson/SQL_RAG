@@ -3,8 +3,6 @@ SQL RAG Application Entry Point
 """
 import os
 import sys
-import yaml
-from typing import Dict, Any
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -13,17 +11,14 @@ load_dotenv()
 # Add src to path
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
-from src.database.models import DatabaseConfig
 from src.database.connection_pool import ConnectionPool
 from src.database.query_executor import QueryExecutor
 from src.database.schema_loader import SchemaLoader
 
-from src.llm.models import LLMConfig
 from src.llm.ollama_client import OllamaClient
 from src.llm.prompt_builder import PromptBuilder
 from src.llm.sql_parser import SQLParser
 
-from src.rag.models import RAGConfig
 from src.rag.embedding_service import EmbeddingService
 from src.rag.vector_store import VectorStore
 from src.rag.context_retriever import ContextRetriever
@@ -33,8 +28,7 @@ from src.core.logger import setup_logging, get_logger
 
 logger = get_logger(__name__)
 
-from src.core.config import load_config, AppConfig
-from src.core.exceptions import SQLRAGException
+from src.core.config import load_config
 
 def main():
     """
