@@ -1,7 +1,7 @@
 """
 Prompt Builder Service
 """
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 from ..database.models import SchemaElement
 
 class PromptBuilder:
@@ -27,12 +27,15 @@ The following tables and columns are available:
 ### User Question
 {user_question}
 
+### Chat History
+{chat_history}
+
 ### SQL Query
 """
 
-    def build_prompt(self, user_question: str, schema_elements: Optional[List[SchemaElement]] = None, context_str: Optional[str] = None) -> str:
+    def build_prompt(self, user_question: str, schema_elements: Optional[List[SchemaElement]] = None, context_str: Optional[str] = None, history: Optional[List[Dict[str, Any]]] = None) -> str:
         """
-        Construct the prompt with schema context and user question.
+        Construct the prompt with schema context, user question, and history.
         """
         # Input Validation
         if not user_question or not user_question.strip():
@@ -48,10 +51,24 @@ The following tables and columns are available:
         else:
             schema_context = "No schema information provided."
 
+        # Format history
+        history_str = ""
+        if history:
+            # Take last 5 messages
+            recent_history = history[-5:]
+            for msg in recent_history:
+                role = msg.get("role", "unknown")
+                content = msg.get("content", "")
+                history_str += f"{role}: {content}\n"
+        
+        if not history_str:
+            history_str = "No previous conversation."
+
         return self.DEFAULT_TEMPLATE.format(
             dialect=self.dialect,
             schema_context=schema_context,
-            user_question=user_question
+            user_question=user_question,
+            chat_history=history_str
         )
 
     def _format_schema(self, schema_elements: List[SchemaElement]) -> str:
