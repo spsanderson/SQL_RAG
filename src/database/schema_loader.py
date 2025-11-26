@@ -9,7 +9,7 @@ class SchemaLoader:
     """
     Loads and caches database schema information.
     """
-    
+
     def __init__(self, pool: ConnectionPool):
         self.pool = pool
 

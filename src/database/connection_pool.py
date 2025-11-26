@@ -12,7 +12,7 @@ class ConnectionPool:
     """
     Manages database connections using the appropriate adapter.
     """
-    
+
     def __init__(self, config: DatabaseConfig):
         self.config = config
         self._adapter: BaseAdapter

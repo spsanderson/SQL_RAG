@@ -9,7 +9,7 @@ class ContextRetriever:
     """
     Retrieves relevant context for a given query.
     """
-    
+
     def __init__(self, config: RAGConfig, vector_store: VectorStore):
         self.config = config
         self.vector_store = vector_store
@@ -38,5 +38,5 @@ class ContextRetriever:
                 context_parts.append(f"Column Description: {doc.content}")
             else:
                 context_parts.append(doc.content)
-                
+
         return "\n\n".join(context_parts)

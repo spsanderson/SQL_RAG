@@ -15,17 +15,17 @@ class SQLAlchemyAdapter(BaseAdapter):
     """
     Base adapter for SQLAlchemy-based database connections.
     """
-    
+
     def execute_query(self, query: str, params: Optional[Dict[str, Any]] = None, timeout: Optional[int] = None) -> QueryResult:
         """
         Execute a SQL query and return the result.
         """
         engine = self.connect()
         start_time = time.time()
-        
+
         # Use configured timeout if not provided
         query_timeout = timeout if timeout is not None else self.config.pool_timeout
-        
+
         try:
             # Use execution_options for timeout
             # Use execution_options for timeout
@@ -33,7 +33,7 @@ class SQLAlchemyAdapter(BaseAdapter):
                 connection = connection.execution_options(timeout=query_timeout)
                 with connection.begin():
                     result = connection.execute(text(query), params or {})
-                
+
                 # For SELECT queries, fetch results
                 if result.returns_rows:
                     columns = list(result.keys())
@@ -45,7 +45,7 @@ class SQLAlchemyAdapter(BaseAdapter):
                     row_count = result.rowcount
 
                 execution_time = time.time() - start_time
-                
+
                 return QueryResult(
                     columns=columns,
                     rows=rows,
@@ -70,7 +70,7 @@ class SQLAlchemyAdapter(BaseAdapter):
                 type="table",
                 description=f"Table: {table_name}"
             ))
-            
+
             # Add columns
             for column in inspector.get_columns(table_name):
                 col_name = column['name']
@@ -81,7 +81,7 @@ class SQLAlchemyAdapter(BaseAdapter):
                     description=f"Column: {col_name} ({col_type})",
                     metadata={"table": table_name, "dtype": col_type}
                 ))
-                
+
         return schema_elements
 
     def validate_connection(self) -> bool:

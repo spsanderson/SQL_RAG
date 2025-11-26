@@ -8,7 +8,7 @@ class PromptBuilder:
     """
     Builds prompts for the LLM.
     """
-    
+
     def __init__(self, dialect: str = "T-SQL"):
         self.dialect = dialect
         self.DEFAULT_TEMPLATE = """
@@ -40,7 +40,7 @@ The following tables and columns are available:
         # Input Validation
         if not user_question or not user_question.strip():
             raise ValueError("User question cannot be empty.")
-            
+
         if len(user_question) > 500:
             raise ValueError("User question is too long (max 500 characters).")
 
@@ -60,7 +60,7 @@ The following tables and columns are available:
                 role = msg.get("role", "unknown")
                 content = msg.get("content", "")
                 history_str += f"{role}: {content}\n"
-        
+
         if not history_str:
             history_str = "No previous conversation."
 
@@ -91,5 +91,5 @@ The following tables and columns are available:
             formatted_lines.append(f"- Table: {table}")
             for col in columns:
                 formatted_lines.append(f"  - {col}")
-        
+
         return "\n".join(formatted_lines)

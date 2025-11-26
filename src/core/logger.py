@@ -8,7 +8,7 @@ from typing import Optional, List
 def setup_logging(level: str = "INFO", log_file: Optional[str] = None) -> None:
     """
     Configure the root logger.
-    
+
     Args:
         level: Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
         log_file: Optional path to a log file.
@@ -30,10 +30,10 @@ def setup_logging(level: str = "INFO", log_file: Optional[str] = None) -> None:
 def get_logger(name: str) -> logging.Logger:
     """
     Get a logger instance with the specified name.
-    
+
     Args:
         name: Name of the logger (usually __name__)
-        
+
     Returns:
         Configured logger instance.
     """

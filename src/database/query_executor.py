@@ -9,7 +9,7 @@ class QueryExecutor:
     """
     Executes SQL queries against the database using the connection pool.
     """
-    
+
     def __init__(self, pool: ConnectionPool):
         self.pool = pool
 

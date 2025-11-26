@@ -9,7 +9,7 @@ class BaseAdapter(ABC):
     """
     Abstract base class for database adapters.
     """
-    
+
     def __init__(self, config: DatabaseConfig):
         self.config = config
 
@@ -33,7 +33,7 @@ class BaseAdapter(ABC):
         Retrieve the database schema.
         """
         pass
-    
+
     @abstractmethod
     def validate_connection(self) -> bool:
         """

@@ -12,7 +12,7 @@ class OllamaClient:
     """
     Client for interacting with the Ollama API.
     """
-    
+
     def __init__(self, config: LLMConfig):
         self.config = config
         self.rate_limiter = RateLimiter(
@@ -45,7 +45,7 @@ class OllamaClient:
                 response = requests.post(url, json=payload, timeout=self.config.timeout)
                 response.raise_for_status()
                 data = response.json()
-                
+
                 return LLMResponse(
                     content=data.get("response", ""),
                     model=data.get("model", self.config.model_name),
@@ -57,7 +57,7 @@ class OllamaClient:
                 if attempt == self.config.retry_attempts - 1:
                     raise LLMGenerationError(f"Failed to generate response from Ollama after {self.config.retry_attempts} attempts: {str(e)}") from e
                 time.sleep(2 ** attempt)  # Exponential backoff
-        
+
         raise LLMGenerationError("Unexpected error in Ollama generation")
 
     def list_models(self) -> List[str]:

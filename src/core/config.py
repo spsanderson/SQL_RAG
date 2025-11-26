@@ -22,13 +22,13 @@ class AppConfig(BaseModel):
 def load_config(config_path: Optional[str] = None) -> AppConfig:
     """
     Load configuration from YAML file and environment variables.
-    
+
     Args:
         config_path: Path to the configuration file.
-        
+
     Returns:
         AppConfig object.
-        
+
     Raises:
         ConfigurationError: If configuration is invalid.
     """
@@ -41,10 +41,10 @@ def load_config(config_path: Optional[str] = None) -> AppConfig:
         password=os.getenv("DB_PASSWORD", ""), # Empty default, validation happens later
         type=os.getenv("DB_TYPE", "sqlserver")
     ) # type: ignore
-    
+
     llm_config = LLMConfig() # type: ignore
     rag_config = RAGConfig() # type: ignore
-    
+
     config_data = {
         "database": db_config,
         "llm": llm_config,
@@ -61,39 +61,39 @@ def load_config(config_path: Optional[str] = None) -> AppConfig:
                     # Deep merge or update logic here
                     # For simplicity, we'll just update the dicts if keys exist
                     if "database" in file_data:
-                        # We need to be careful with Pydantic models, 
+                        # We need to be careful with Pydantic models,
                         # usually we'd parse the dict into the model
-                        # But since we already have models with env vars, 
+                        # But since we already have models with env vars,
                         # we might want to prefer file over env or vice versa.
                         # Let's assume file overrides env for explicit values.
                         db_dict = db_config.dict()
                         db_dict.update(file_data["database"])
                         config_data["database"] = DatabaseConfig(**db_dict)
-                        
+
                     if "llm" in file_data:
                         llm_dict = llm_config.dict()
                         llm_dict.update(file_data["llm"])
                         config_data["llm"] = LLMConfig(**llm_dict)
-                        
+
                     if "rag" in file_data:
                         rag_dict = rag_config.dict()
                         rag_dict.update(file_data["rag"])
                         config_data["rag"] = RAGConfig(**rag_dict)
-                        
+
                     if "logging" in file_data:
                         config_data["logging"] = file_data["logging"]
-                        
+
         except Exception as e:
             raise ConfigurationError(f"Failed to load configuration file: {e}")
 
     # Final Validation
     try:
         app_config = AppConfig(**config_data) # type: ignore
-        
+
         # Specific business rule validation
         if app_config.database.type != "sqlite" and not app_config.database.password:
              raise ValueError("Database password is required (DB_PASSWORD env var or config file).")
-             
+
         return app_config
     except Exception as e:
         raise ConfigurationError(f"Configuration validation failed: {e}")

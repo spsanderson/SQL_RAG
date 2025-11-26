@@ -12,7 +12,7 @@ class SQLiteAdapter(SQLAlchemyAdapter):
     """
     SQLite implementation of the BaseAdapter using SQLAlchemy.
     """
-    
+
     def __init__(self, config: DatabaseConfig):
         super().__init__(config)
         self._engine: Optional[Engine] = None

@@ -9,7 +9,7 @@ class EmbeddingService:
     """
     Generates embeddings for text using SentenceTransformers.
     """
-    
+
     def __init__(self, config: RAGConfig):
         self.config = config
         self._model: Optional[SentenceTransformer] = None

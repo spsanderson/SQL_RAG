@@ -18,7 +18,7 @@ class RAGOrchestrator:
     """
     Orchestrates the RAG flow: Retrieve -> Generate -> Execute.
     """
-    
+
     def __init__(
         self,
         retriever: ContextRetriever,
@@ -33,7 +33,7 @@ class RAGOrchestrator:
         self.sql_parser = sql_parser
         self.query_executor = query_executor
 
-        
+
         # Load schema for validation
         schema = self.query_executor.pool.get_adapter().get_schema()
         self.validator = SQLValidator(schema)
@@ -41,7 +41,7 @@ class RAGOrchestrator:
     def process_query(self, user_question: str, history: Optional[List[Dict[str, Any]]] = None) -> Dict[str, Any]:
         """
         Process a user question and return the results.
-        
+
         Args:
             user_question: The user's question.
             history: Optional list of chat history messages.
@@ -74,11 +74,11 @@ class RAGOrchestrator:
         current_try = 0
         last_error = None
         sql_query = "NO_SQL"
-        
+
         while current_try < max_retries:
             current_try += 1
             logger.info(f"Generation attempt {current_try}/{max_retries}")
-            
+
             # Add error context if retrying
             current_prompt = prompt
             if last_error:
@@ -106,10 +106,10 @@ class RAGOrchestrator:
                 self.validator.validate_schema(sql_query)
                 self.validator.validate_complexity(sql_query)
                 self.validator.enforce_result_limit(sql_query)
-                
+
                 # If we get here, validation passed
                 break
-                
+
             except SecurityError as e:
                 logger.warning(f"SQL Validation failed on attempt {current_try}: {e}")
                 last_error = str(e)

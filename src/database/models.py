@@ -17,7 +17,7 @@ class DatabaseConfig(BaseModel):
     driver: str = Field("ODBC Driver 17 for SQL Server", description="ODBC driver name")
     type: str = Field("sqlserver", description="Database type (sqlserver, sqlite)")
 
-    
+
     # Connection pool settings
     pool_size: int = Field(5, description="Minimum pool size")
     max_overflow: int = Field(10, description="Maximum overflow connections")

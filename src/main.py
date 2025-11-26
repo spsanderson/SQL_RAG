@@ -90,14 +90,14 @@ def main():
             user_input = input("\n> ")
             if user_input.lower() in ['exit', 'quit']:
                 break
-            
+
             if not user_input.strip():
                 continue
 
             print("Processing...")
             logger.info(f"Processing query: {user_input}")
             result = orchestrator.process_query(user_input)
-            
+
             print("\n--- Result ---")
             if result.get("status") == "success":
                 data = result["data"]
@@ -110,12 +110,12 @@ def main():
                 print("Could not generate a SQL query for this question.")
             else:
                 print(f"Error: {result.get('error')}")
-            
+
             print(f"\nGenerated SQL: {result.get('generated_sql')}")
             print("\nSteps:")
             for step in result["steps"]:
                 print(f"- {step['name']}: {step['duration']:.2f}s")
-                
+
         except KeyboardInterrupt:
             break
         except Exception as e:

@@ -35,21 +35,21 @@ def get_orchestrator():
         # We assume config file is in default location or env vars are set
         config_path = "config/config.yaml" if os.path.exists("config/config.yaml") else None
         app_config = load_config(config_path)
-        
+
         # Initialize services
         db_pool = ConnectionPool(app_config.database)
         query_executor = QueryExecutor(db_pool)
-        
+
         llm_client = OllamaClient(app_config.llm)
-        
+
         embedding_service = EmbeddingService(app_config.rag)
         vector_store = VectorStore(app_config.rag, embedding_service)
         context_retriever = ContextRetriever(vector_store, app_config.rag)
-        
+
         dialect = "SQLite" if app_config.database.type == "sqlite" else "T-SQL"
         prompt_builder = PromptBuilder(dialect=dialect)
         sql_parser = SQLParser()
-        
+
         return RAGOrchestrator(
             retriever=context_retriever,
             llm_client=llm_client,
@@ -63,7 +63,7 @@ def get_orchestrator():
 
 def main():
     st.title("SQL RAG Assistant")
-    
+
     orchestrator = get_orchestrator()
     if not orchestrator:
         return
@@ -98,15 +98,15 @@ def main():
                                 "role": msg["role"],
                                 "content": msg["content"]
                             })
-                            
+
                     result = orchestrator.process_query(prompt, history=history)
-                    
+
                     if result["status"] == "success":
                         response_text = "Here are the results:"
                         data = pd.DataFrame(result["data"]["rows"])
                         st.markdown(response_text)
                         st.dataframe(data)
-                        
+
                         # Add to history
                         st.session_state.messages.append({
                             "role": "assistant",
@@ -114,10 +114,10 @@ def main():
                             "data": data,
                             "sql": result.get("generated_sql")
                         })
-                        
+
                         with st.expander("Generated SQL"):
                             st.code(result.get("generated_sql"), language="sql")
-                            
+
                     elif result["status"] == "no_sql_generated":
                         response_text = "I couldn't generate a valid SQL query for your request."
                         st.markdown(response_text)
@@ -125,7 +125,7 @@ def main():
                             "role": "assistant",
                             "content": response_text
                         })
-                        
+
                     else:
                         response_text = f"Error: {result.get('error')}"
                         st.error(response_text)
@@ -133,7 +133,7 @@ def main():
                             "role": "assistant",
                             "content": response_text
                         })
-                        
+
                 except Exception as e:
                     st.error(f"An unexpected error occurred: {e}")
 

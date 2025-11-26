@@ -11,7 +11,7 @@ class VectorStore:
     """
     Manages interaction with ChromaDB vector store.
     """
-    
+
     def __init__(self, config: RAGConfig, embedding_service: EmbeddingService):
         self.config = config
         self.embedding_service = embedding_service
@@ -31,10 +31,10 @@ class VectorStore:
         ids = [doc.id or f"doc_{i}" for i, doc in enumerate(documents)]
         texts = [doc.content for doc in documents]
         metadatas = [doc.metadata for doc in documents]
-        
+
         # Generate embeddings
         embeddings = self.embedding_service.embed_documents(texts)
-        
+
         self._collection.add(
             ids=ids,
             documents=texts,
@@ -48,12 +48,12 @@ class VectorStore:
         """
         n_results = n_results or self.config.top_k
         query_embedding = self.embedding_service.embed_query(query_text)
-        
+
         results = self._collection.query(
             query_embeddings=[query_embedding],
             n_results=n_results
         )
-        
+
         documents = []
         if results['documents']:
             for i in range(len(results['documents'][0])):
@@ -64,7 +64,7 @@ class VectorStore:
                     score=results['distances'][0][i] if results['distances'] else None
                 )
                 documents.append(doc)
-                
+
         return documents
 
     def delete_collection(self):
