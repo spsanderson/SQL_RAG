@@ -3,6 +3,8 @@ Using LLMs and RAG against SQL
 
 Summary:
 
+**[📘 User Guide](USER_GUIDE.md)** - Comprehensive instructions for Demo and Production usage.
+
 **Documents Analyzed:**
 
   * **TITLE:** [`SPARC Document`](SPARC_Documents/SQL%20LLM%20RAG%20Project%20SPARC.md)
