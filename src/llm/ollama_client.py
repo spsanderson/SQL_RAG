@@ -96,7 +96,7 @@ class OllamaClient:
 
             print("Warning: Timed out waiting for Ollama to start.")
 
-        except (OSError, ValueError) as e:
+        except (OSError, subprocess.SubprocessError) as e:
             print(f"Failed to start Ollama: {e}")
 
     def generate(self, prompt: str) -> LLMResponse:
