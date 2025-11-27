@@ -7,6 +7,11 @@ from typing import List
 from .models import LLMConfig, LLMResponse
 from ..core.exceptions import LLMGenerationError
 from ..core.rate_limiter import RateLimiter
+import os
+import shutil
+import socket
+import subprocess
+from urllib.parse import urlparse
 
 class OllamaClient:
     """
@@ -19,6 +24,63 @@ class OllamaClient:
             max_calls=config.rate_limit_requests,
             period=config.rate_limit_period
         )
+
+    @staticmethod
+    def ensure_service_running(config: LLMConfig):
+        """
+        Ensure that the Ollama service is running.
+        If not, attempt to start it.
+        """
+        parsed_url = urlparse(config.base_url)
+        host = parsed_url.hostname or 'localhost'
+        port = parsed_url.port or 11434
+
+        # Check if port is open
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            if s.connect_ex((host, port)) == 0:
+                return # Already running
+
+        # Not running, try to start
+        print("Ollama service not detected. Attempting to start...")
+        
+        executable = shutil.which("ollama")
+        if not executable:
+            # Fallback for Windows
+            local_app_data = os.environ.get("LOCALAPPDATA")
+            if local_app_data:
+                candidate = os.path.join(local_app_data, "Programs", "Ollama", "ollama.exe")
+                if os.path.exists(candidate):
+                    executable = candidate
+        
+        if not executable:
+            print("Warning: 'ollama' executable not found in PATH or default location. Cannot start service automatically.")
+            return
+
+        try:
+            # Start process
+            # Windows specific flags to avoid blocking and open in new window/console if needed
+            creationflags = 0
+            if os.name == 'nt':
+                creationflags = subprocess.CREATE_NEW_CONSOLE
+                
+            subprocess.Popen(
+                [executable, "serve"],
+                creationflags=creationflags
+            )
+            
+            # Wait for it to be ready
+            print("Waiting for Ollama to start...")
+            for _ in range(20): # Wait up to 20 seconds
+                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                    if s.connect_ex((host, port)) == 0:
+                        print("Ollama started successfully.")
+                        return
+                time.sleep(1)
+            
+            print("Warning: Timed out waiting for Ollama to start.")
+            
+        except Exception as e:
+            print(f"Failed to start Ollama: {e}")
 
     def generate(self, prompt: str) -> LLMResponse:
         """
