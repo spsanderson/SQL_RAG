@@ -66,6 +66,7 @@ def main():
 
     logger.info("Setting up LLM client...")
     print("Setting up LLM client...")
+    OllamaClient.ensure_service_running(llm_config)
     llm_client = OllamaClient(llm_config)
     dialect = "SQLite" if db_config.type == "sqlite" else "T-SQL"
     prompt_builder = PromptBuilder(dialect=dialect)
