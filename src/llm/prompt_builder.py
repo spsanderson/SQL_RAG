@@ -1,18 +1,20 @@
 """
-Prompt Builder Service
+Prompt Builder Service.
+
+Builds prompts for the LLM by combining schema context, user questions,
+and conversation history.
 """
-from typing import List, Optional, Dict, Any
+from typing import Any, Dict, List, Optional
+
 from ..database.models import SchemaElement
 
-class PromptBuilder:
-    """
-    Builds prompts for the LLM.
-    """
 
-    def __init__(self, dialect: str = "T-SQL"):
-        self.dialect = dialect
-        self.DEFAULT_TEMPLATE = """
-You are an expert SQL developer. Your goal is to write a correct and efficient {dialect} query to answer the user's question.
+class PromptBuilder:
+    """Builds prompts for the LLM."""
+
+    DEFAULT_TEMPLATE = """
+You are an expert SQL developer. Your goal is to write a correct and \
+efficient {dialect} query to answer the user's question.
 
 ### Database Schema
 The following tables and columns are available:
@@ -33,11 +35,37 @@ The following tables and columns are available:
 ### SQL Query
 """
 
-    def build_prompt(self, user_question: str, schema_elements: Optional[List[SchemaElement]] = None, context_str: Optional[str] = None, history: Optional[List[Dict[str, Any]]] = None) -> str:
+    def __init__(self, dialect: str = "T-SQL"):
+        """
+        Initialize the prompt builder.
+
+        Args:
+            dialect: SQL dialect to use (e.g., "T-SQL", "SQLite").
+        """
+        self.dialect = dialect
+
+    def build_prompt(
+        self,
+        user_question: str,
+        schema_elements: Optional[List[SchemaElement]] = None,
+        context_str: Optional[str] = None,
+        history: Optional[List[Dict[str, Any]]] = None
+    ) -> str:
         """
         Construct the prompt with schema context, user question, and history.
+
+        Args:
+            user_question: The user's natural language question.
+            schema_elements: Optional list of schema elements for context.
+            context_str: Optional pre-formatted context string.
+            history: Optional list of chat history messages.
+
+        Returns:
+            Formatted prompt string.
+
+        Raises:
+            ValueError: If user question is empty or too long.
         """
-        # Input Validation
         if not user_question or not user_question.strip():
             raise ValueError("User question cannot be empty.")
 
@@ -51,18 +79,7 @@ The following tables and columns are available:
         else:
             schema_context = "No schema information provided."
 
-        # Format history
-        history_str = ""
-        if history:
-            # Take last 5 messages
-            recent_history = history[-5:]
-            for msg in recent_history:
-                role = msg.get("role", "unknown")
-                content = msg.get("content", "")
-                history_str += f"{role}: {content}\n"
-
-        if not history_str:
-            history_str = "No previous conversation."
+        history_str = self._format_history(history)
 
         return self.DEFAULT_TEMPLATE.format(
             dialect=self.dialect,
@@ -71,9 +88,40 @@ The following tables and columns are available:
             chat_history=history_str
         )
 
+    def _format_history(
+        self,
+        history: Optional[List[Dict[str, Any]]]
+    ) -> str:
+        """
+        Format chat history into a string representation.
+
+        Args:
+            history: List of message dictionaries with 'role' and 'content'.
+
+        Returns:
+            Formatted history string.
+        """
+        if not history:
+            return "No previous conversation."
+
+        recent_history = history[-5:]
+        lines = []
+        for msg in recent_history:
+            role = msg.get("role", "unknown")
+            content = msg.get("content", "")
+            lines.append(f"{role}: {content}")
+
+        return "\n".join(lines)
+
     def _format_schema(self, schema_elements: List[SchemaElement]) -> str:
         """
         Format schema elements into a string representation.
+
+        Args:
+            schema_elements: List of schema elements to format.
+
+        Returns:
+            Formatted schema string.
         """
         tables: Dict[str, List[str]] = {}
         for element in schema_elements:
@@ -84,7 +132,8 @@ The following tables and columns are available:
                 if table_name:
                     if table_name not in tables:
                         tables[table_name] = []
-                    tables[table_name].append(f"{element.name} ({element.metadata.get('dtype', 'unknown')})")
+                    dtype = element.metadata.get('dtype', 'unknown')
+                    tables[table_name].append(f"{element.name} ({dtype})")
 
         formatted_lines = []
         for table, columns in tables.items():

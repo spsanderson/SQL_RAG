@@ -1,21 +1,27 @@
 """
-SQL Server Adapter
+SQL Server Adapter.
+
+SQLAlchemy-based adapter for SQL Server database connections.
 """
-import time
-from typing import List, Optional, Any, Dict
-from sqlalchemy import create_engine, text, inspect
-from sqlalchemy.engine import Engine, Connection, URL
-from sqlalchemy.exc import SQLAlchemyError
+from typing import Optional
+
+from sqlalchemy import create_engine
+from sqlalchemy.engine import Engine, URL
 
 from ..models import DatabaseConfig
 from .sqlalchemy_adapter import SQLAlchemyAdapter
 
+
 class SQLServerAdapter(SQLAlchemyAdapter):
-    """
-    SQL Server implementation of the BaseAdapter using SQLAlchemy.
-    """
+    """SQL Server implementation of the BaseAdapter using SQLAlchemy."""
 
     def __init__(self, config: DatabaseConfig):
+        """
+        Initialize the SQL Server adapter.
+
+        Args:
+            config: Database configuration.
+        """
         super().__init__(config)
         self._engine: Optional[Engine] = None
         self._connection_string = self._build_connection_string()
@@ -23,9 +29,10 @@ class SQLServerAdapter(SQLAlchemyAdapter):
     def _build_connection_string(self) -> URL:
         """
         Build the SQLAlchemy connection string for SQL Server.
+
+        Returns:
+            SQLAlchemy URL object for the connection.
         """
-        # Using mssql+pyodbc dialect
-        # Using mssql+pyodbc dialect
         connection_url = URL.create(
             "mssql+pyodbc",
             username=self.config.username,
@@ -40,6 +47,9 @@ class SQLServerAdapter(SQLAlchemyAdapter):
     def connect(self) -> Engine:
         """
         Create and return the SQLAlchemy engine.
+
+        Returns:
+            SQLAlchemy Engine instance.
         """
         if not self._engine:
             self._engine = create_engine(
@@ -50,5 +60,3 @@ class SQLServerAdapter(SQLAlchemyAdapter):
                 pool_recycle=self.config.pool_recycle
             )
         return self._engine
-
-
