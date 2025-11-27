@@ -6,7 +6,7 @@ ollama:
 
   # Model settings
   model:
-    name: sqlcoder-7b-2:Q5_K_M
+    name: hf.co/defog/sqlcoder-7b-2:Q5_K_M
     alternative: codellama:7b
 
     # Generation parameters
