@@ -75,9 +75,9 @@ def get_orchestrator():
         # If schema.json exists, set up additional validation
         if os.path.exists(SCHEMA_JSON_PATH):
             from src.validation.validator import SQLValidator
-            orchestrator.validator = SQLValidator(
+            orchestrator.set_validator(SQLValidator(
                 schema_json_path=SCHEMA_JSON_PATH
-            )
+            ))
             logger.info("Loaded schema validation from %s", SCHEMA_JSON_PATH)
 
         return orchestrator

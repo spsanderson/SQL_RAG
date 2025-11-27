@@ -80,11 +80,10 @@ class OllamaClient:
             if os.name == 'nt':
                 creationflags = subprocess.CREATE_NEW_CONSOLE
 
-            with subprocess.Popen(
+            subprocess.Popen(
                 [executable, "serve"],
                 creationflags=creationflags
-            ):
-                pass  # Process started
+            )
 
             # Wait for it to be ready
             print("Waiting for Ollama to start...")

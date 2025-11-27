@@ -28,7 +28,8 @@ class RAGOrchestrator:
         llm_client: OllamaClient,
         prompt_builder: PromptBuilder,
         sql_parser: SQLParser,
-        query_executor: QueryExecutor
+        query_executor: QueryExecutor,
+        validator: Optional[SQLValidator] = None
     ):
         """
         Initialize the orchestrator.
@@ -39,6 +40,8 @@ class RAGOrchestrator:
             prompt_builder: Builds prompts for the LLM.
             sql_parser: Parses SQL from LLM responses.
             query_executor: Executes validated SQL queries.
+            validator: Optional custom SQL validator. If not provided,
+                       a default validator is created from the database schema.
         """
         self.retriever = retriever
         self.llm_client = llm_client
@@ -46,9 +49,21 @@ class RAGOrchestrator:
         self.sql_parser = sql_parser
         self.query_executor = query_executor
 
-        # Load schema for validation
-        schema = self.query_executor.pool.get_adapter().get_schema()
-        self.validator = SQLValidator(schema)
+        # Use provided validator or create default from schema
+        if validator is not None:
+            self.validator = validator
+        else:
+            schema = self.query_executor.pool.get_adapter().get_schema()
+            self.validator = SQLValidator(schema)
+
+    def set_validator(self, validator: SQLValidator) -> None:
+        """
+        Set a custom SQL validator.
+
+        Args:
+            validator: The SQL validator to use for query validation.
+        """
+        self.validator = validator
 
     def process_query(
         self,
@@ -192,6 +207,7 @@ class RAGOrchestrator:
         """Validate SQL query against security rules and schema."""
         self.validator.validate_query(sql_query)
         self.validator.validate_schema(sql_query)
+        self.validator.validate_columns(sql_query)
         self.validator.validate_complexity(sql_query)
         self.validator.enforce_result_limit(sql_query)
 
