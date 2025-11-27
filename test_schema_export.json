@@ -1,0 +1,290 @@
+[
+  {
+    "name": "Patients",
+    "type": "table",
+    "description": "Table: Patients",
+    "metadata": null
+  },
+  {
+    "name": "Patients.mrn",
+    "type": "column",
+    "description": "Column: mrn (TEXT)",
+    "metadata": {
+      "table": "Patients",
+      "dtype": "TEXT"
+    }
+  },
+  {
+    "name": "Patients.PatientID",
+    "type": "column",
+    "description": "Column: PatientID (INTEGER)",
+    "metadata": {
+      "table": "Patients",
+      "dtype": "INTEGER"
+    }
+  },
+  {
+    "name": "Patients.FirstName",
+    "type": "column",
+    "description": "Column: FirstName (TEXT)",
+    "metadata": {
+      "table": "Patients",
+      "dtype": "TEXT"
+    }
+  },
+  {
+    "name": "Patients.LastName",
+    "type": "column",
+    "description": "Column: LastName (TEXT)",
+    "metadata": {
+      "table": "Patients",
+      "dtype": "TEXT"
+    }
+  },
+  {
+    "name": "Patients.DateOfBirth",
+    "type": "column",
+    "description": "Column: DateOfBirth (DATE)",
+    "metadata": {
+      "table": "Patients",
+      "dtype": "DATE"
+    }
+  },
+  {
+    "name": "Patients.Gender",
+    "type": "column",
+    "description": "Column: Gender (TEXT)",
+    "metadata": {
+      "table": "Patients",
+      "dtype": "TEXT"
+    }
+  },
+  {
+    "name": "Patients.Email",
+    "type": "column",
+    "description": "Column: Email (TEXT)",
+    "metadata": {
+      "table": "Patients",
+      "dtype": "TEXT"
+    }
+  },
+  {
+    "name": "Visits",
+    "type": "table",
+    "description": "Table: Visits",
+    "metadata": null
+  },
+  {
+    "name": "Visits.VisitID",
+    "type": "column",
+    "description": "Column: VisitID (INTEGER)",
+    "metadata": {
+      "table": "Visits",
+      "dtype": "INTEGER"
+    }
+  },
+  {
+    "name": "Visits.PatientID",
+    "type": "column",
+    "description": "Column: PatientID (INTEGER)",
+    "metadata": {
+      "table": "Visits",
+      "dtype": "INTEGER"
+    }
+  },
+  {
+    "name": "Visits.VisitDate",
+    "type": "column",
+    "description": "Column: VisitDate (REAL)",
+    "metadata": {
+      "table": "Visits",
+      "dtype": "REAL"
+    }
+  },
+  {
+    "name": "Visits.Reason",
+    "type": "column",
+    "description": "Column: Reason (TEXT)",
+    "metadata": {
+      "table": "Visits",
+      "dtype": "TEXT"
+    }
+  },
+  {
+    "name": "Visits.Diagnosis",
+    "type": "column",
+    "description": "Column: Diagnosis (TEXT)",
+    "metadata": {
+      "table": "Visits",
+      "dtype": "TEXT"
+    }
+  },
+  {
+    "name": "healthyR_data",
+    "type": "table",
+    "description": "Table: healthyR_data",
+    "metadata": null
+  },
+  {
+    "name": "healthyR_data.mrn",
+    "type": "column",
+    "description": "Column: mrn (TEXT)",
+    "metadata": {
+      "table": "healthyR_data",
+      "dtype": "TEXT"
+    }
+  },
+  {
+    "name": "healthyR_data.visit_id",
+    "type": "column",
+    "description": "Column: visit_id (TEXT)",
+    "metadata": {
+      "table": "healthyR_data",
+      "dtype": "TEXT"
+    }
+  },
+  {
+    "name": "healthyR_data.visit_start_date_time",
+    "type": "column",
+    "description": "Column: visit_start_date_time (REAL)",
+    "metadata": {
+      "table": "healthyR_data",
+      "dtype": "REAL"
+    }
+  },
+  {
+    "name": "healthyR_data.visit_end_date_time",
+    "type": "column",
+    "description": "Column: visit_end_date_time (REAL)",
+    "metadata": {
+      "table": "healthyR_data",
+      "dtype": "REAL"
+    }
+  },
+  {
+    "name": "healthyR_data.total_charge_amount",
+    "type": "column",
+    "description": "Column: total_charge_amount (REAL)",
+    "metadata": {
+      "table": "healthyR_data",
+      "dtype": "REAL"
+    }
+  },
+  {
+    "name": "healthyR_data.total_amount_due",
+    "type": "column",
+    "description": "Column: total_amount_due (REAL)",
+    "metadata": {
+      "table": "healthyR_data",
+      "dtype": "REAL"
+    }
+  },
+  {
+    "name": "healthyR_data.total_adjustment_amount",
+    "type": "column",
+    "description": "Column: total_adjustment_amount (REAL)",
+    "metadata": {
+      "table": "healthyR_data",
+      "dtype": "REAL"
+    }
+  },
+  {
+    "name": "healthyR_data.payer_grouping",
+    "type": "column",
+    "description": "Column: payer_grouping (TEXT)",
+    "metadata": {
+      "table": "healthyR_data",
+      "dtype": "TEXT"
+    }
+  },
+  {
+    "name": "healthyR_data.total_payment_amount",
+    "type": "column",
+    "description": "Column: total_payment_amount (REAL)",
+    "metadata": {
+      "table": "healthyR_data",
+      "dtype": "REAL"
+    }
+  },
+  {
+    "name": "healthyR_data.ip_op_flag",
+    "type": "column",
+    "description": "Column: ip_op_flag (TEXT)",
+    "metadata": {
+      "table": "healthyR_data",
+      "dtype": "TEXT"
+    }
+  },
+  {
+    "name": "healthyR_data.service_line",
+    "type": "column",
+    "description": "Column: service_line (TEXT)",
+    "metadata": {
+      "table": "healthyR_data",
+      "dtype": "TEXT"
+    }
+  },
+  {
+    "name": "healthyR_data.length_of_stay",
+    "type": "column",
+    "description": "Column: length_of_stay (REAL)",
+    "metadata": {
+      "table": "healthyR_data",
+      "dtype": "REAL"
+    }
+  },
+  {
+    "name": "healthyR_data.expected_length_of_stay",
+    "type": "column",
+    "description": "Column: expected_length_of_stay (INTEGER)",
+    "metadata": {
+      "table": "healthyR_data",
+      "dtype": "INTEGER"
+    }
+  },
+  {
+    "name": "healthyR_data.length_of_stay_threshold",
+    "type": "column",
+    "description": "Column: length_of_stay_threshold (INTEGER)",
+    "metadata": {
+      "table": "healthyR_data",
+      "dtype": "INTEGER"
+    }
+  },
+  {
+    "name": "healthyR_data.los_outlier_flag",
+    "type": "column",
+    "description": "Column: los_outlier_flag (REAL)",
+    "metadata": {
+      "table": "healthyR_data",
+      "dtype": "REAL"
+    }
+  },
+  {
+    "name": "healthyR_data.readmit_flag",
+    "type": "column",
+    "description": "Column: readmit_flag (REAL)",
+    "metadata": {
+      "table": "healthyR_data",
+      "dtype": "REAL"
+    }
+  },
+  {
+    "name": "healthyR_data.readmit_expectation",
+    "type": "column",
+    "description": "Column: readmit_expectation (INTEGER)",
+    "metadata": {
+      "table": "healthyR_data",
+      "dtype": "INTEGER"
+    }
+  },
+  {
+    "name": "healthyR_data.PatientID",
+    "type": "column",
+    "description": "Column: PatientID (INTEGER)",
+    "metadata": {
+      "table": "healthyR_data",
+      "dtype": "INTEGER"
+    }
+  }
+]
