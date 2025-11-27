@@ -24,6 +24,7 @@ class BaseAdapter(ABC):
     @abstractmethod
     def connect(self) -> Any:
         """Establish a connection to the database."""
+        ...
 
     @abstractmethod
     def execute_query(
@@ -33,11 +34,14 @@ class BaseAdapter(ABC):
         timeout: Optional[int] = None
     ) -> QueryResult:
         """Execute a SQL query and return the result."""
+        ...
 
     @abstractmethod
     def get_schema(self) -> List[SchemaElement]:
         """Retrieve the database schema."""
+        ...
 
     @abstractmethod
     def validate_connection(self) -> bool:
         """Validate that the connection is working."""
+        ...
