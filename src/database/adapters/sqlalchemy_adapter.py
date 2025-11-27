@@ -1,42 +1,58 @@
 """
-SQLAlchemy Adapter Base Class
+SQLAlchemy Adapter Base Class.
+
+Base implementation for SQLAlchemy-based database adapters.
 """
 import time
-from typing import List, Optional, Any, Dict
-from sqlalchemy import text, inspect
-from sqlalchemy.engine import Engine
+from typing import Any, Dict, List, Optional
+
+from sqlalchemy import inspect, text
 from sqlalchemy.exc import SQLAlchemyError
 
-from ..models import DatabaseConfig, QueryResult, SchemaElement
-from .base_adapter import BaseAdapter
 from ...core.exceptions import DatabaseError
+from ..models import QueryResult, SchemaElement
+from .base_adapter import BaseAdapter
+
 
 class SQLAlchemyAdapter(BaseAdapter):
-    """
-    Base adapter for SQLAlchemy-based database connections.
-    """
+    """Base adapter for SQLAlchemy-based database connections."""
 
-    def execute_query(self, query: str, params: Optional[Dict[str, Any]] = None, timeout: Optional[int] = None) -> QueryResult:
+    def execute_query(
+        self,
+        query: str,
+        params: Optional[Dict[str, Any]] = None,
+        timeout: Optional[int] = None
+    ) -> QueryResult:
         """
         Execute a SQL query and return the result.
+
+        Args:
+            query: SQL query to execute.
+            params: Optional query parameters.
+            timeout: Optional timeout in seconds.
+
+        Returns:
+            QueryResult containing the query results.
+
+        Raises:
+            DatabaseError: If query execution fails.
         """
         engine = self.connect()
         start_time = time.time()
 
-        # Use configured timeout if not provided
-        query_timeout = timeout if timeout is not None else self.config.pool_timeout
+        query_timeout = (
+            timeout if timeout is not None else self.config.pool_timeout
+        )
 
         try:
-            # Use execution_options for timeout
-            # Use execution_options for timeout
             with engine.connect() as connection:
                 connection = connection.execution_options(timeout=query_timeout)
                 with connection.begin():
                     result = connection.execute(text(query), params or {})
 
-                # For SELECT queries, fetch results
                 if result.returns_rows:
                     columns = list(result.keys())
+                    # Access _mapping for row dict conversion
                     rows = [dict(row._mapping) for row in result.fetchall()]
                     row_count = len(rows)
                 else:
@@ -53,25 +69,26 @@ class SQLAlchemyAdapter(BaseAdapter):
                     execution_time=execution_time
                 )
         except SQLAlchemyError as e:
-            raise DatabaseError(f"Database execution error: {str(e)}") from e
+            raise DatabaseError(f"Database execution error: {e}") from e
 
     def get_schema(self) -> List[SchemaElement]:
         """
         Retrieve the database schema using SQLAlchemy inspector.
+
+        Returns:
+            List of schema elements (tables and columns).
         """
         engine = self.connect()
         inspector = inspect(engine)
         schema_elements = []
 
         for table_name in inspector.get_table_names():
-            # Add table
             schema_elements.append(SchemaElement(
                 name=table_name,
                 type="table",
                 description=f"Table: {table_name}"
             ))
 
-            # Add columns
             for column in inspector.get_columns(table_name):
                 col_name = column['name']
                 col_type = str(column['type'])
@@ -87,6 +104,9 @@ class SQLAlchemyAdapter(BaseAdapter):
     def validate_connection(self) -> bool:
         """
         Validate that the connection is working.
+
+        Returns:
+            True if connection is valid, False otherwise.
         """
         try:
             engine = self.connect()
