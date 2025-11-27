@@ -1,0 +1,257 @@
+{
+  "Patients": {
+    "columns": [
+      {
+        "cid": 0,
+        "name": "mrn",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 1,
+        "name": "PatientID",
+        "type": "INTEGER",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 2,
+        "name": "FirstName",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 3,
+        "name": "LastName",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 4,
+        "name": "DateOfBirth",
+        "type": "DATE",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 5,
+        "name": "Gender",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 6,
+        "name": "Email",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      }
+    ],
+    "foreign_keys": []
+  },
+  "Visits": {
+    "columns": [
+      {
+        "cid": 0,
+        "name": "VisitID",
+        "type": "INTEGER",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 1,
+        "name": "PatientID",
+        "type": "INTEGER",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 2,
+        "name": "VisitDate",
+        "type": "REAL",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 3,
+        "name": "Reason",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 4,
+        "name": "Diagnosis",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      }
+    ],
+    "foreign_keys": []
+  },
+  "healthyR_data": {
+    "columns": [
+      {
+        "cid": 0,
+        "name": "mrn",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 1,
+        "name": "visit_id",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 2,
+        "name": "visit_start_date_time",
+        "type": "REAL",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 3,
+        "name": "visit_end_date_time",
+        "type": "REAL",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 4,
+        "name": "total_charge_amount",
+        "type": "REAL",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 5,
+        "name": "total_amount_due",
+        "type": "REAL",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 6,
+        "name": "total_adjustment_amount",
+        "type": "REAL",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 7,
+        "name": "payer_grouping",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 8,
+        "name": "total_payment_amount",
+        "type": "REAL",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 9,
+        "name": "ip_op_flag",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 10,
+        "name": "service_line",
+        "type": "TEXT",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 11,
+        "name": "length_of_stay",
+        "type": "REAL",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 12,
+        "name": "expected_length_of_stay",
+        "type": "INTEGER",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 13,
+        "name": "length_of_stay_threshold",
+        "type": "INTEGER",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 14,
+        "name": "los_outlier_flag",
+        "type": "REAL",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 15,
+        "name": "readmit_flag",
+        "type": "REAL",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 16,
+        "name": "readmit_expectation",
+        "type": "INTEGER",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      },
+      {
+        "cid": 17,
+        "name": "PatientID",
+        "type": "INTEGER",
+        "notnull": 0,
+        "dflt_value": null,
+        "pk": 0
+      }
+    ],
+    "foreign_keys": []
+  }
+}
