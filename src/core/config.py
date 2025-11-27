@@ -187,20 +187,16 @@ def _apply_config_file_overrides(
     if not file_data:
         return
 
-    if "database" in file_data:
-        db_dict = config_data["database"].model_dump()
-        db_dict.update(file_data["database"])
-        config_data["database"] = DatabaseConfig(**db_dict)
-
-    if "llm" in file_data:
-        llm_dict = config_data["llm"].model_dump()
-        llm_dict.update(file_data["llm"])
-        config_data["llm"] = LLMConfig(**llm_dict)
-
-    if "rag" in file_data:
-        rag_dict = config_data["rag"].model_dump()
-        rag_dict.update(file_data["rag"])
-        config_data["rag"] = RAGConfig(**rag_dict)
+    config_mapping = {
+        "database": DatabaseConfig,
+        "llm": LLMConfig,
+        "rag": RAGConfig
+    }
+    for key, model_class in config_mapping.items():
+        if key in file_data:
+            model_dict = config_data[key].model_dump()
+            model_dict.update(file_data[key])
+            config_data[key] = model_class(**model_dict)
 
     for key in ("logging", "security"):
         if key in file_data:
