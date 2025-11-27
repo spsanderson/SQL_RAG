@@ -207,6 +207,25 @@ def _apply_config_file_overrides(
             config_data[key] = file_data[key]
 
 
+def _get_db_port() -> int:
+    """
+    Get database port from environment variable with validation.
+
+    Returns:
+        Port number as integer.
+
+    Raises:
+        ConfigurationError: If port value is not a valid integer.
+    """
+    port_str = os.getenv("DB_PORT", "1433")
+    try:
+        return int(port_str)
+    except ValueError as e:
+        raise ConfigurationError(
+            f"Invalid DB_PORT value '{port_str}': must be an integer"
+        ) from e
+
+
 def load_config(config_path: Optional[str] = None) -> AppConfig:
     """
     Load configuration from YAML files and environment variables.
@@ -228,7 +247,7 @@ def load_config(config_path: Optional[str] = None) -> AppConfig:
     # Default values from environment
     db_config = DatabaseConfig(
         host=os.getenv("DB_HOST", "localhost"),
-        port=int(os.getenv("DB_PORT", "1433")),
+        port=_get_db_port(),
         database=os.getenv("DB_NAME", "MedicalDB"),
         username=os.getenv("DB_USER", "sa"),
         password=os.getenv("DB_PASSWORD", ""),

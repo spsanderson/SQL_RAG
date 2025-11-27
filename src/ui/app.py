@@ -28,7 +28,9 @@ logger = get_logger(__name__)
 
 st.set_page_config(page_title="SQL RAG Assistant", layout="wide")
 
-# Default schema file path for the demo
+# Default schema file path for the demo.
+# This file should be located at the project root (same directory as demo.db).
+# It contains the database schema definitions for table/column validation.
 SCHEMA_JSON_PATH = "schema.json"
 
 
