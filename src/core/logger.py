@@ -2,8 +2,10 @@
 Logging Configuration Module
 """
 import logging
+import logging.config
+import os
 import sys
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
 
 def setup_logging(level: str = "INFO", log_file: Optional[str] = None) -> None:
     """
@@ -26,6 +28,23 @@ def setup_logging(level: str = "INFO", log_file: Optional[str] = None) -> None:
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
         handlers=handlers
     )
+
+def configure_logging(config: Dict[str, Any]) -> None:
+    """
+    Configure logging using a dictionary configuration.
+    
+    Args:
+        config: Dictionary containing logging configuration.
+    """
+    # Ensure log directory exists if specified in handlers
+    if 'handlers' in config:
+        for handler in config['handlers'].values():
+            if 'filename' in handler:
+                log_dir = os.path.dirname(handler['filename'])
+                if log_dir and not os.path.exists(log_dir):
+                    os.makedirs(log_dir, exist_ok=True)
+
+    logging.config.dictConfig(config)
 
 def get_logger(name: str) -> logging.Logger:
     """
