@@ -38,27 +38,47 @@ The demo database consists of three linked tables: `Patients`, `Visits`, and `he
 
 ```mermaid
 erDiagram
-    Patients ||--o{ Visits : "has"
-    Patients ||--o{ healthyR_data : "has"
-    
     Patients {
-        INTEGER PatientID PK
         TEXT mrn
+        INTEGER PatientID
         TEXT FirstName
         TEXT LastName
+        DATE DateOfBirth
+        TEXT Gender
+        TEXT Email
     }
     Visits {
-        INTEGER VisitID PK
-        INTEGER PatientID FK
+        INTEGER VisitID
+        INTEGER PatientID
         REAL VisitDate
         TEXT Reason
+        TEXT Diagnosis
     }
     healthyR_data {
-        TEXT mrn FK
-        INTEGER PatientID FK
+        TEXT mrn
+        TEXT visit_id
+        REAL visit_start_date_time
+        REAL visit_end_date_time
+        REAL total_charge_amount
         REAL total_amount_due
+        REAL total_adjustment_amount
         TEXT payer_grouping
+        REAL total_payment_amount
+        TEXT ip_op_flag
+        TEXT service_line
+        REAL length_of_stay
+        INTEGER expected_length_of_stay
+        INTEGER length_of_stay_threshold
+        REAL los_outlier_flag
+        REAL readmit_flag
+        INTEGER readmit_expectation
+        INTEGER PatientID
     }
+
+    Patients ||--o{ Visits : "has"
+    Patients ||--o{ healthyR_data : "has"
+    Visits ||--o{ healthyR_data : "has"
+
 ```
 
 ### Demo Working Queries
